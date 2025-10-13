@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block title %}Inicio - Salud Vital{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12 text-center mb-5">
+        <h1 class="display-4">🏥 Sistema Salud Vital</h1>
+        <p class="lead">Sistema de gestión integral para clínica médica</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5>📊 Gestión Médica</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li><a href="/api/medicos/" class="text-decoration-none">👨‍⚕️ Médicos</a></li>
+                    <li><a href="/api/pacientes/" class="text-decoration-none">👥 Pacientes</a></li>
+                    <li><a href="/api/especialidades/" class="text-decoration-none">🎓 Especialidades</a></li>
+                    <li><a href="/api/salas-atencion/" class="text-decoration-none">🏢 Salas de Atención</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header bg-success text-white">
+                <h5>💊 Procesos Clínicos</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li><a href="/api/consultas-medicas/" class="text-decoration-none">📋 Consultas Médicas</a></li>
+                    <li><a href="/api/tratamientos/" class="text-decoration-none">💊 Tratamientos</a></li>
+                    <li><a href="/api/medicamentos/" class="text-decoration-none">💊 Medicamentos</a></li>
+                    <li><a href="/api/recetas-medicas/" class="text-decoration-none">📝 Recetas Médicas</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5>🔧 Herramientas del Sistema</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 text-center">
+                        <a href="/docs/" class="btn btn-outline-primary btn-lg w-100 mb-2">
+                            📚 Documentación API
+                        </a>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <a href="/admin/" class="btn btn-outline-secondary btn-lg w-100 mb-2">
+                            ⚙️ Panel Administración
+                        </a>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <a href="/api/" class="btn btn-outline-success btn-lg w-100 mb-2">
+                            🔗 Endpoints API
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

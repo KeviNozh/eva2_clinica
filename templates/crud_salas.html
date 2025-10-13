@@ -1,0 +1,51 @@
+{% extends 'crud_base.html' %}
+
+{% block crud_content %}
+<header class="crud-header">
+  <div>
+    <div class="crud-title">🏢 Gestión de Salas de Atención</div>
+    <div class="crud-subtitle">Administrar salas y disponibilidad</div>
+  </div>
+  <div class="crud-actions">
+    <button class="btn btn-primary" onclick="showCreateForm()">+ Nueva Sala</button>
+    <a href="/api/salas-atencion/" class="btn btn-secondary" target="_blank">API</a>
+  </div>
+</header>
+
+<div class="crud-card">
+  <h3>Salas de Atención</h3>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Número</th>
+        <th>Piso</th>
+        <th>Tipo</th>
+        <th>Disponibilidad</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>101</td>
+        <td>1</td>
+        <td>Consulta General</td>
+        <td><span style="color: #34d399;">● Disponible</span></td>
+        <td class="action-buttons">
+          <button class="btn btn-edit btn-small">Editar</button>
+          <button class="btn btn-delete btn-small">Eliminar</button>
+        </td>
+      </tr>
+      <tr>
+        <td>201</td>
+        <td>2</td>
+        <td>Especialidad</td>
+        <td><span style="color: #ef4444;">● Ocupada</span></td>
+        <td class="action-buttons">
+          <button class="btn btn-edit btn-small">Editar</button>
+          <button class="btn btn-delete btn-small">Eliminar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+{% endblock %}

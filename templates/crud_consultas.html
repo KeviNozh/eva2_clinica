@@ -1,0 +1,57 @@
+{% extends 'crud_base.html' %}
+
+{% block crud_content %}
+<header class="crud-header">
+  <div>
+    <div class="crud-title">📋 Gestión de Consultas Médicas</div>
+    <div class="crud-subtitle">Administrar historial de consultas</div>
+  </div>
+  <div class="crud-actions">
+    <button class="btn btn-primary" onclick="showCreateForm()">+ Nueva Consulta</button>
+    <a href="/api/consultas-medicas/" class="btn btn-secondary" target="_blank">API</a>
+  </div>
+</header>
+
+<div class="crud-card">
+  <h3>Consultas Registradas</h3>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Paciente</th>
+        <th>Médico</th>
+        <th>Fecha</th>
+        <th>Motivo</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>Juan Pérez</td>
+        <td>Dr. Carlos López</td>
+        <td>15/03/2024 10:00</td>
+        <td>Control rutina</td>
+        <td><span style="color: #34d399;">Realizada</span></td>
+        <td class="action-buttons">
+          <button class="btn btn-edit btn-small">Editar</button>
+          <button class="btn btn-delete btn-small">Eliminar</button>
+        </td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>María González</td>
+        <td>Dra. Ana Martínez</td>
+        <td>16/03/2024 11:30</td>
+        <td>Fiebre persistente</td>
+        <td><span style="color: #fbbf24;">Programada</span></td>
+        <td class="action-buttons">
+          <button class="btn btn-edit btn-small">Editar</button>
+          <button class="btn btn-delete btn-small">Eliminar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+{% endblock %}

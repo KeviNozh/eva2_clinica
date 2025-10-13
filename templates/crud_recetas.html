@@ -1,0 +1,44 @@
+{% extends 'crud_base.html' %}
+
+{% block crud_content %}
+<header class="crud-header">
+  <div>
+    <div class="crud-title">📝 Gestión de Recetas Médicas</div>
+    <div class="crud-subtitle">Administrar prescripciones médicas</div>
+  </div>
+  <div class="crud-actions">
+    <a href="/api/recetas-medicas/" class="btn btn-secondary" target="_blank">API</a>
+  </div>
+</header>
+
+<div class="crud-card">
+  <h3>Recetas Emitidas</h3>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Paciente</th>
+        <th>Médico</th>
+        <th>Medicamento</th>
+        <th>Dosis</th>
+        <th>Fecha</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>Juan Pérez</td>
+        <td>Dr. Carlos López</td>
+        <td>Paracetamol 500mg</td>
+        <td>1 tableta cada 8h</td>
+        <td>15/03/2024</td>
+        <td class="action-buttons">
+          <button class="btn btn-edit btn-small">Editar</button>
+          <button class="btn btn-delete btn-small">Eliminar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+{% endblock %}

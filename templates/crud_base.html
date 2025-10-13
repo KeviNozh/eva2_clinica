@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+  :root{
+    --bg:#0f172a; --white:#ffffff; --muted:#9aa4b2;
+    --c1-start:#7c3aed; --c1-end:#06b6d4;
+    --c2-start:#ff7a59; --c2-end:#ffb86b;
+    --radius:14px; --shadow-lg: 0 18px 60px rgba(2,6,23,0.5);
+  }
+  *{box-sizing:border-box}
+  body{background:var(--bg);color:var(--white);margin:0;font-family:Inter,sans-serif;}
+  .crud-container{max-width:1200px;margin:30px auto;padding:20px}
+  .crud-header{display:flex;align-items:center;gap:16px;padding:18px;border-radius:12px;
+    background:linear-gradient(90deg,rgba(255,255,255,0.03),rgba(255,255,255,0.02));
+    border:1px solid rgba(255,255,255,0.04);box-shadow:0 8px 30px rgba(2,6,23,0.45);margin-bottom:20px}
+  .crud-title{font-weight:800;font-size:24px}
+  .crud-subtitle{color:var(--muted);margin-top:4px}
+  .crud-actions{display:flex;gap:10px;margin-left:auto}
+  .btn{padding:10px 16px;border-radius:10px;border:0;font-weight:700;cursor:pointer;color:var(--white)}
+  .btn-primary{background:linear-gradient(90deg,var(--c1-start),var(--c1-end))}
+  .btn-secondary{background:linear-gradient(90deg,var(--c2-start),var(--c2-end))}
+  .crud-grid{display:grid;gap:16px;margin-top:20px}
+  .crud-card{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));
+    padding:20px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+  .form-group{margin-bottom:15px}
+  .form-label{display:block;margin-bottom:5px;color:var(--muted);font-weight:600}
+  .form-input{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);
+    background:rgba(255,255,255,0.05);color:var(--white)}
+  .table{width:100%;border-collapse:collapse;margin-top:20px}
+  .table th,.table td{padding:12px;text-align:left;border-bottom:1px solid rgba(255,255,255,0.1)}
+  .table th{color:var(--muted);font-weight:600}
+  .action-buttons{display:flex;gap:8px}
+  .btn-small{padding:6px 12px;font-size:12px;border-radius:6px}
+  .btn-edit{background:linear-gradient(90deg,#3b82f6,#06b6d4)}
+  .btn-delete{background:linear-gradient(90deg,#ef4444,#f97316)}
+  </style>
+</head>
+<body>
+  <div class="crud-container">
+    {% block crud_content %}
+    {% endblock %}
+  </div>
+</body>
+</html>
+{% endblock %}

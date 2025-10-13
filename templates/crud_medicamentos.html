@@ -1,0 +1,114 @@
+{% extends 'crud_base.html' %}
+
+{% block crud_content %}
+<header class="crud-header">
+  <div>
+    <div class="crud-title">💊 Gestión de Medicamentos</div>
+    <div class="crud-subtitle">Administrar inventario de fármacos</div>
+  </div>
+  <div class="crud-actions">
+    <button class="btn btn-primary" onclick="showCreateForm()">+ Nuevo Medicamento</button>
+    <a href="/api/medicamentos/" class="btn btn-secondary" target="_blank">API</a>
+  </div>
+</header>
+
+<div id="createForm" class="crud-card" style="display:none;">
+  <h3>Registrar Nuevo Medicamento</h3>
+  <!-- FORM CORREGIDO -->
+  <form method="POST" action="{% url 'crear_medicamento' %}">
+    {% csrf_token %}
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+      <div class="form-group">
+        <label class="form-label">Nombre</label>
+        <input type="text" class="form-input" name="nombre" placeholder="Paracetamol 500mg" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Laboratorio</label>
+        <input type="text" class="form-input" name="laboratorio" placeholder="LabChile">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Stock</label>
+        <input type="number" class="form-input" name="stock" value="0" min="0">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Precio Unitario</label>
+        <input type="number" class="form-input" name="precio_unitario" step="0.01" value="0" min="0">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tipo</label>
+        <select class="form-input" name="tipo">
+          <option value="Tableta">Tableta</option>
+          <option value="Cápsula">Cápsula</option>
+          <option value="Jarabe">Jarabe</option>
+          <option value="Inyección">Inyección</option>
+          <option value="Otro">Otro</option>
+        </select>
+      </div>
+    </div>
+    <div class="action-buttons" style="margin-top: 20px;">
+      <button type="submit" class="btn btn-primary">Guardar</button>
+      <button type="button" class="btn btn-secondary" onclick="hideCreateForm()">Cancelar</button>
+    </div>
+  </form>
+</div>
+
+<div class="crud-card">
+  <h3>Medicamentos en Inventario</h3>
+  
+  <!-- Mostrar mensajes -->
+  {% if messages %}
+  <div style="margin-bottom: 20px;">
+    {% for message in messages %}
+    <div style="padding: 10px; border-radius: 8px; background: {% if message.tags == 'success' %}#34d39920{% else %}#ef444420{% endif %}; color: {% if message.tags == 'success' %}#34d399{% else %}#ef4444{% endif %};">
+      {{ message }}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  
+  <table class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Laboratorio</th>
+        <th>Stock</th>
+        <th>Precio</th>
+        <th>Tipo</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for medicamento in medicamentos %}
+      <tr>
+        <td>{{ medicamento.id }}</td>
+        <td>{{ medicamento.nombre }}</td>
+        <td>{{ medicamento.laboratorio }}</td>
+        <td>{{ medicamento.stock }}</td>
+        <td>${{ medicamento.precio_unitario }}</td>
+        <td>{{ medicamento.tipo }}</td>
+        <td class="action-buttons">
+          <button class="btn btn-edit btn-small">Editar</button>
+          <button class="btn btn-delete btn-small">Eliminar</button>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="7" style="text-align: center; color: var(--muted);">
+          No hay medicamentos registrados
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<script>
+function showCreateForm() { 
+  document.getElementById('createForm').style.display = 'block'; 
+}
+function hideCreateForm() { 
+  document.getElementById('createForm').style.display = 'none'; 
+}
+</script>
+{% endblock %}

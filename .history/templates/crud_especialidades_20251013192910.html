@@ -1,0 +1,77 @@
+{% extends 'crud_base.html' %}
+
+{% block crud_content %}
+<header class="crud-header">
+  <div>
+    <div class="crud-title">🎓 Gestión de Especialidades</div>
+    <div class="crud-subtitle">Administrar especialidades médicas del sistema</div>
+  </div>
+  <div class="crud-actions">
+    <button class="btn btn-primary" onclick="showCreateForm()">+ Nueva Especialidad</button>
+    <a href="/api/especialidades/" class="btn btn-secondary" target="_blank">Ver API</a>
+  </div>
+</header>
+
+<!-- Formulario Crear -->
+<div id="createForm" class="crud-card" style="display:none;">
+  <h3>Crear Nueva Especialidad</h3>
+  <form id="especialidadForm">
+    <div class="form-group">
+      <label class="form-label">Nombre</label>
+      <input type="text" class="form-input" name="nombre" placeholder="Ej: Cardiología" required>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Descripción</label>
+      <textarea class="form-input" name="descripcion" rows="3" placeholder="Descripción de la especialidad"></textarea>
+    </div>
+    <div class="action-buttons">
+      <button type="submit" class="btn btn-primary">Guardar</button>
+      <button type="button" class="btn btn-secondary" onclick="hideCreateForm()">Cancelar</button>
+    </div>
+  </form>
+</div>
+
+<!-- Lista de Especialidades -->
+<div class="crud-card">
+  <h3>Especialidades Registradas</h3>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Descripción</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>Cardiología</td>
+        <td>Especialidad en enfermedades del corazón</td>
+        <td class="action-buttons">
+          <button class="btn btn-edit btn-small">Editar</button>
+          <button class="btn btn-delete btn-small">Eliminar</button>
+        </td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>Pediatría</td>
+        <td>Especialidad en salud infantil</td>
+        <td class="action-buttons">
+          <button class="btn btn-edit btn-small">Editar</button>
+          <button class="btn btn-delete btn-small">Eliminar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<script>
+function showCreateForm() {
+  document.getElementById('createForm').style.display = 'block';
+}
+function hideCreateForm() {
+  document.getElementById('createForm').style.display = 'none';
+}
+</script>
+{% endblock %}
