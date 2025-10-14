@@ -3,34 +3,24 @@
 {% block title %}Gestión de Pacientes - Salud Vital{% endblock %}
 
 {% block content %}
-<div class="container-fluid mt-4">
-    <!-- Header -->
+<div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h1 class="h3">👥 Gestión de Pacientes</h1>
-            <p class="text-muted">Administrar registro de pacientes del sistema</p>
-        </div>
-        <div>
-            <a href="{% url 'crud:crear_paciente' %}" class="btn btn-primary">
-                <i class="fas fa-plus"></i> Nuevo Paciente
-            </a>
-            <a href="/api/pacientes/" class="btn btn-outline-secondary" target="_blank">
-                <i class="fas fa-code"></i> Ver API
-            </a>
-        </div>
+        <h2>Gestión de Pacientes</h2>
+        <a href="{% url 'crud:crear_paciente' %}" class="btn btn-success">
+            <i class="fas fa-plus"></i> Nuevo Paciente
+        </a>
     </div>
 
-    <!-- Filtros -->
+    <!-- Filtros y Búsqueda -->
     <div class="card mb-4">
         <div class="card-header bg-light">
-            <h5 class="mb-0"><i class="fas fa-filter"></i> Filtros y Búsqueda</h5>
+            <h5 class="mb-0">Filtros y Búsqueda</h5>
         </div>
         <div class="card-body">
             <form method="get" class="row g-3">
-                <div class="col-md-4">
-                    <label class="form-label">Buscar:</label>
-                    <input type="text" class="form-control" name="q" value="{{ request.GET.q }}" 
-                           placeholder="Nombre, apellido o RUT...">
+                <div class="col-md-3">
+                    <label class="form-label">Buscar por nombre/apellido:</label>
+                    <input type="text" class="form-control" name="q" value="{{ request.GET.q }}" placeholder="Nombre o apellido...">
                 </div>
                 <div class="col-md-2">
                     <label class="form-label">Género:</label>
@@ -63,13 +53,9 @@
                         <option value="false" {% if request.GET.activo == 'false' %}selected{% endif %}>Inactivo</option>
                     </select>
                 </div>
-                <div class="col-md-2 d-flex align-items-end">
-                    <button type="submit" class="btn btn-primary me-2">
-                        <i class="fas fa-search"></i> Filtrar
-                    </button>
-                    <a href="{% url 'crud:crud_pacientes' %}" class="btn btn-outline-secondary">
-                        <i class="fas fa-times"></i> Limpiar
-                    </a>
+                <div class="col-md-3 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary me-2">Filtrar</button>
+                    <a href="{% url 'crud:crud_pacientes' %}" class="btn btn-outline-secondary">Limpiar</a>
                 </div>
             </form>
         </div>
@@ -77,8 +63,8 @@
 
     <!-- Tabla de Pacientes -->
     <div class="card">
-        <div class="card-header bg-dark text-white">
-            <h5 class="mb-0"><i class="fas fa-list"></i> Lista de Pacientes</h5>
+        <div class="card-header bg-light">
+            <h5 class="mb-0">Lista de Pacientes ({{ pacientes.count }})</h5>
         </div>
         <div class="card-body">
             {% if pacientes %}
@@ -107,9 +93,9 @@
                             <td>{{ paciente.apellido }}</td>
                             <td>
                                 {% now "Y" as current_year %}
-                                {% with paciente.fecha_nacimiento|date:"Y" as birth_year %}
-                                {{ current_year|add:"0"|add:"-1"|add:birth_year }}
-                                {% endwith %} años
+                                {% with paciente.fecha_nacimiento.year as birth_year %}
+                                    {{ current_year|add:"0"|add:"-"|add:birth_year }} años
+                                {% endwith %}
                             </td>
                             <td>{{ paciente.genero }}</td>
                             <td>{{ paciente.tipo_sangre }}</td>
@@ -123,10 +109,10 @@
                             </td>
                             <td>
                                 <div class="btn-group btn-group-sm">
-                                    <a href="{% url 'crud:editar_paciente' paciente.id %}" class="btn btn-warning" title="Editar">
+                                    <a href="{% url 'crud:editar_paciente' paciente.id %}" class="btn btn-warning">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <a href="{% url 'crud:eliminar_paciente' paciente.id %}" class="btn btn-danger" title="Eliminar">
+                                    <a href="{% url 'crud:eliminar_paciente' paciente.id %}" class="btn btn-danger">
                                         <i class="fas fa-trash"></i>
                                     </a>
                                 </div>
@@ -138,14 +124,29 @@
             </div>
             {% else %}
             <div class="alert alert-info text-center">
-                <h5><i class="fas fa-info-circle"></i> No se encontraron pacientes</h5>
+                <h5>No se encontraron pacientes</h5>
                 <p>No hay pacientes que coincidan con los criterios de búsqueda.</p>
-                <a href="{% url 'crud:crear_paciente' %}" class="btn btn-primary">
-                    <i class="fas fa-plus"></i> Crear Primer Paciente
-                </a>
+                <a href="{% url 'crud:crear_paciente' %}" class="btn btn-primary">Crear Primer Paciente</a>
             </div>
             {% endif %}
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Función para calcular edad automáticamente
+function calcularEdad(fechaNacimiento) {
+    const hoy = new Date();
+    const nacimiento = new Date(fechaNacimiento);
+    let edad = hoy.getFullYear() - nacimiento.getFullYear();
+    const mes = hoy.getMonth() - nacimiento.getMonth();
+    
+    if (mes < 0 || (mes === 0 && hoy.getDate() < nacimiento.getDate())) {
+        edad--;
+    }
+    return edad;
+}
+</script>
 {% endblock %}

@@ -1,0 +1,118 @@
+{% extends 'crud_base.html' %}
+{% load custom_filters %}
+
+{% block crud_title %}Gestión de Pacientes{% endblock %}
+{% block create_url %}{% url 'crud:crear_paciente' %}{% endblock %}
+{% block create_text %}Nuevo Paciente{% endblock %}
+{% block list_title %}Lista de Pacientes{% endblock %}
+
+{% block filters %}
+<div class="card mb-4">
+    <div class="card-header bg-light">
+        <h5 class="mb-0">Filtros y Búsqueda</h5>
+    </div>
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-3">
+                <label class="form-label">Buscar:</label>
+                <input type="text" class="form-control" name="q" value="{{ request.GET.q }}" placeholder="Nombre, apellido o RUT...">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Género:</label>
+                <select class="form-select" name="genero">
+                    <option value="">Todos</option>
+                    <option value="Masculino" {% if request.GET.genero == 'Masculino' %}selected{% endif %}>Masculino</option>
+                    <option value="Femenino" {% if request.GET.genero == 'Femenino' %}selected{% endif %}>Femenino</option>
+                    <option value="Otro" {% if request.GET.genero == 'Otro' %}selected{% endif %}>Otro</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Tipo Sangre:</label>
+                <select class="form-select" name="tipo_sangre">
+                    <option value="">Todos</option>
+                    <option value="A+" {% if request.GET.tipo_sangre == 'A+' %}selected{% endif %}>A+</option>
+                    <option value="A-" {% if request.GET.tipo_sangre == 'A-' %}selected{% endif %}>A-</option>
+                    <option value="B+" {% if request.GET.tipo_sangre == 'B+' %}selected{% endif %}>B+</option>
+                    <option value="B-" {% if request.GET.tipo_sangre == 'B-' %}selected{% endif %}>B-</option>
+                    <option value="AB+" {% if request.GET.tipo_sangre == 'AB+' %}selected{% endif %}>AB+</option>
+                    <option value="AB-" {% if request.GET.tipo_sangre == 'AB-' %}selected{% endif %}>AB-</option>
+                    <option value="O+" {% if request.GET.tipo_sangre == 'O+' %}selected{% endif %}>O+</option>
+                    <option value="O-" {% if request.GET.tipo_sangre == 'O-' %}selected{% endif %}>O-</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Estado:</label>
+                <select class="form-select" name="activo">
+                    <option value="">Todos</option>
+                    <option value="true" {% if request.GET.activo == 'true' %}selected{% endif %}>Activo</option>
+                    <option value="false" {% if request.GET.activo == 'false' %}selected{% endif %}>Inactivo</option>
+                </select>
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary me-2">Filtrar</button>
+                <a href="{% url 'crud:crud_pacientes' %}" class="btn btn-outline-secondary">Limpiar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block table_content %}
+{% if pacientes %}
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>RUT</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Edad</th>
+                <th>Género</th>
+                <th>Tipo Sangre</th>
+                <th>Teléfono</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for paciente in pacientes %}
+            <tr>
+                <td>{{ paciente.id }}</td>
+                <td>{{ paciente.rut }}</td>
+                <td>{{ paciente.nombre }}</td>
+                <td>{{ paciente.apellido }}</td>
+                <td>{{ paciente.fecha_nacimiento|edad }}</td>
+                <td>{{ paciente.genero }}</td>
+                <td>{{ paciente.tipo_sangre }}</td>
+                <td>{{ paciente.telefono|default:"-" }}</td>
+                <td>
+                    {% if paciente.activo %}
+                        <span class="badge bg-success">Activo</span>
+                    {% else %}
+                        <span class="badge bg-danger">Inactivo</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <div class="btn-group btn-group-sm">
+                        <a href="{% url 'crud:editar_paciente' paciente.id %}" class="btn btn-warning" title="Editar">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <a href="{% url 'crud:eliminar_paciente' paciente.id %}" class="btn btn-danger" title="Eliminar">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="alert alert-info text-center">
+    <h5>No se encontraron pacientes</h5>
+    <p>No hay pacientes que coincidan con los criterios de búsqueda.</p>
+    <a href="{% url 'crud:crear_paciente' %}" class="btn btn-primary">Crear Primer Paciente</a>
+</div>
+{% endif %}
+{% endblock %}

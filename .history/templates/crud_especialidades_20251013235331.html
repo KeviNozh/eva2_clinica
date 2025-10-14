@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Especialidades</h1>
+<a href="{% url 'crud:crear_especialidad' %}">Crear especialidad</a>
+<ul>
+  {% for e in especialidades %}
+    <li>{{ e.nombre }} —
+      <a href="{% url 'crud:editar_especialidad' e.id %}">Editar</a> |
+      <a href="{% url 'crud:eliminar_especialidad' e.id %}">Eliminar</a>
+    </li>
+  {% empty %}<li>No hay especialidades</li>{% endfor %}
+</ul>
+{% endblock %}

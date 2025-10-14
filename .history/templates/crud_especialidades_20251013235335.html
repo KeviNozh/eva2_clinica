@@ -3,38 +3,26 @@
 {% block crud_content %}
 <header class="crud-header">
   <div>
-    <div class="crud-title">👨‍⚕️ Gestión de Médicos</div>
-    <div class="crud-subtitle">Administrar profesionales médicos</div>
+    <div class="crud-title">🎓 Gestión de Especialidades</div>
+    <div class="crud-subtitle">Administrar especialidades médicas del sistema</div>
   </div>
   <div class="crud-actions">
-    <button class="btn btn-primary" onclick="showCreateForm()">+ Nuevo Médico</button>
-    <a href="/api/medicos/" class="btn btn-secondary" target="_blank">Ver API</a>
+    <button class="btn btn-primary" onclick="showCreateForm()">+ Nueva Especialidad</button>
+    <a href="/api/especialidades/" class="btn btn-secondary" target="_blank">Ver API</a>
   </div>
 </header>
 
 <!-- Formulario Crear -->
 <div id="createForm" class="crud-card" style="display:none;">
-  <h3>Registrar Nuevo Médico</h3>
-  <form id="medicoForm">
-    <div class="form-group">
-      <label class="form-label">RUT</label>
-      <input type="text" class="form-input" name="rut" placeholder="12.345.678-9" required>
-    </div>
+  <h3>Crear Nueva Especialidad</h3>
+  <form id="especialidadForm">
     <div class="form-group">
       <label class="form-label">Nombre</label>
-      <input type="text" class="form-input" name="nombre" placeholder="Nombre" required>
+      <input type="text" class="form-input" name="nombre" placeholder="Ej: Cardiología" required>
     </div>
     <div class="form-group">
-      <label class="form-label">Apellido</label>
-      <input type="text" class="form-input" name="apellido" placeholder="Apellido" required>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Especialidad</label>
-      <select class="form-input" name="especialidad" required>
-        <option value="">Seleccionar especialidad</option>
-        <option value="1">Cardiología</option>
-        <option value="2">Pediatría</option>
-      </select>
+      <label class="form-label">Descripción</label>
+      <textarea class="form-input" name="descripcion" rows="3" placeholder="Descripción de la especialidad"></textarea>
     </div>
     <div class="action-buttons">
       <button type="submit" class="btn btn-primary">Guardar</button>
@@ -43,35 +31,32 @@
   </form>
 </div>
 
-<!-- Lista de Médicos -->
+<!-- Lista de Especialidades -->
 <div class="crud-card">
-  <h3>Médicos Registrados</h3>
+  <h3>Especialidades Registradas</h3>
   <table class="table">
     <thead>
       <tr>
-        <th>RUT</th>
+        <th>ID</th>
         <th>Nombre</th>
-        <th>Especialidad</th>
-        <th>Teléfono</th>
+        <th>Descripción</th>
         <th>Acciones</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td>12.345.678-9</td>
-        <td>Dr. Carlos López</td>
+        <td>1</td>
         <td>Cardiología</td>
-        <td>+56 9 1234 5678</td>
+        <td>Especialidad en enfermedades del corazón</td>
         <td class="action-buttons">
           <button class="btn btn-edit btn-small">Editar</button>
           <button class="btn btn-delete btn-small">Eliminar</button>
         </td>
       </tr>
       <tr>
-        <td>23.456.789-0</td>
-        <td>Dra. Ana Martínez</td>
+        <td>2</td>
         <td>Pediatría</td>
-        <td>+56 9 2345 6789</td>
+        <td>Especialidad en salud infantil</td>
         <td class="action-buttons">
           <button class="btn btn-edit btn-small">Editar</button>
           <button class="btn btn-delete btn-small">Eliminar</button>

@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Crear Médico - Salud Vital{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0"><i class="fas fa-user-md"></i> Nuevo Médico</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">RUT *</label>
+                                <input type="text" class="form-control" name="rut" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Nombre *</label>
+                                <input type="text" class="form-control" name="nombre" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Apellido *</label>
+                                <input type="text" class="form-control" name="apellido" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Especialidad *</label>
+                                <select class="form-select" name="especialidad" required>
+                                    <option value="">Seleccionar especialidad</option>
+                                    {% for especialidad in especialidades %}
+                                    <option value="{{ especialidad.id }}">{{ especialidad.nombre }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Teléfono</label>
+                                <input type="text" class="form-control" name="telefono">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Correo</label>
+                                <input type="email" class="form-control" name="correo">
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-save"></i> Crear Médico
+                            </button>
+                            <a href="{% url 'crud:crud_medicos' %}" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

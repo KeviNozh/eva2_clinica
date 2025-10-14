@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Médicos</h1>
+<a href="{% url 'crud:crear_medico' %}">Crear médico</a>
+<table>
+  <tr><th>RUT</th><th>Nombre</th><th>Apellido</th><th>Especialidad</th><th>Acciones</th></tr>
+  {% for m in medicos %}
+  <tr>
+    <td>{{ m.rut }}</td>
+    <td>{{ m.nombre }}</td>
+    <td>{{ m.apellido }}</td>
+    <td>{{ m.especialidad.nombre if m.especialidad }}</td>
+    <td>
+      <a href="{% url 'crud:editar_medico' m.id %}">Editar</a> |
+      <a href="{% url 'crud:eliminar_medico' m.id %}">Eliminar</a>
+    </td>
+  </tr>
+  {% empty %}
+  <tr><td colspan="5">No hay médicos</td></tr>
+  {% endfor %}
+</table>
+{% endblock %}

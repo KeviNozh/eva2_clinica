@@ -90,3 +90,7 @@ function hideCreateForm() {
 }
 </script>
 {% endblock %}
+
+def crud_medicamentos(request):
+    medicamentos = Medicamento.objects.all()
+    return render(request, 'crud_medicamentos.html', {'medicamentos': medicamentos})

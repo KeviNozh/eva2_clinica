@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>{% block crud_title %}Gestión{% endblock %}</h2>
+        {% block crud_actions %}
+        <a href="{% block create_url %}#{% endblock %}" class="btn btn-success">
+            <i class="fas fa-plus"></i> {% block create_text %}Nuevo{% endblock %}
+        </a>
+        {% endblock %}
+    </div>
+
+    <!-- Filtros y Búsqueda -->
+    {% block filters %}
+    {% endblock %}
+
+    <!-- Tabla de datos -->
+    <div class="card">
+        <div class="card-header bg-light">
+            <h5 class="mb-0">{% block list_title %}Lista{% endblock %} ({{ object_list.count }})</h5>
+        </div>
+        <div class="card-body">
+            {% block table_content %}
+            {% endblock %}
+        </div>
+    </div>
+</div>
+{% endblock %}

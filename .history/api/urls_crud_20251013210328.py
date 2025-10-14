@@ -1,5 +1,5 @@
 """
-URLS PARA LAS VISTAS CRUD - Completo
+URLS PARA LAS VISTAS CRUD - Conexión real con PostgreSQL
 """
 from django.urls import path
 from . import views_crud
@@ -18,7 +18,7 @@ urlpatterns = [
     path('medicos/crear/', views_crud.crear_medico, name='crear_medico'),
     path('medicos/editar/<int:id>/', views_crud.editar_medico, name='editar_medico'),
     path('medicos/eliminar/<int:id>/', views_crud.eliminar_medico, name='eliminar_medico'),
-
+    
     # Especialidades
     path('especialidades/', views_crud.crud_especialidades, name='crud_especialidades'),
     path('especialidades/crear/', views_crud.crear_especialidad, name='crear_especialidad'),
@@ -27,18 +27,31 @@ urlpatterns = [
     
     # Consultas
     path('consultas/', views_crud.crud_consultas, name='crud_consultas'),
+    path('consultas/crear/', views_crud.crear_consulta, name='crear_consulta'),
+    path('consultas/editar/<int:id>/', views_crud.editar_consulta, name='editar_consulta'),
+    path('consultas/eliminar/<int:id>/', views_crud.eliminar_consulta, name='eliminar_consulta'),
     
     # Medicamentos
     path('medicamentos/', views_crud.crud_medicamentos, name='crud_medicamentos'),
     path('medicamentos/crear/', views_crud.crear_medicamento, name='crear_medicamento'),
+    path('medicamentos/editar/<int:id>/', views_crud.editar_medicamento, name='editar_medicamento'),
+    path('medicamentos/eliminar/<int:id>/', views_crud.eliminar_medicamento, name='eliminar_medicamento'),
     
     # Tratamientos
     path('tratamientos/', views_crud.crud_tratamientos, name='crud_tratamientos'),
+    path('tratamientos/crear/', views_crud.crear_tratamiento, name='crear_tratamiento'),
+    path('tratamientos/editar/<int:id>/', views_crud.editar_tratamiento, name='editar_tratamiento'),
+    path('tratamientos/eliminar/<int:id>/', views_crud.eliminar_tratamiento, name='eliminar_tratamiento'),
     
     # Recetas
     path('recetas/', views_crud.crud_recetas, name='crud_recetas'),
+    path('recetas/crear/', views_crud.crear_receta, name='crear_receta'),
+    path('recetas/editar/<int:id>/', views_crud.editar_receta, name='editar_receta'),
+    path('recetas/eliminar/<int:id>/', views_crud.eliminar_receta, name='eliminar_receta'),
     
     # Salas
     path('salas/', views_crud.crud_salas, name='crud_salas'),
     path('salas/crear/', views_crud.crear_sala, name='crear_sala'),
+    path('salas/editar/<int:id>/', views_crud.editar_sala, name='editar_sala'),
+    path('salas/eliminar/<int:id>/', views_crud.eliminar_sala, name='eliminar_sala'),
 ]

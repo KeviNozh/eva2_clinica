@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}Eliminar Paciente - Salud Vital{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-6 mx-auto">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0">Confirmar Eliminación</h4>
+                </div>
+                <div class="card-body">
+                    <p class="alert alert-warning">
+                        <strong>¿Estás seguro de que deseas eliminar este paciente?</strong>
+                    </p>
+                    
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5>{{ paciente.nombre }} {{ paciente.apellido }}</h5>
+                            <p class="mb-1"><strong>RUT:</strong> {{ paciente.rut }}</p>
+                            <p class="mb-1"><strong>Fecha Nacimiento:</strong> {{ paciente.fecha_nacimiento }}</p>
+                            <p class="mb-1"><strong>Género:</strong> {{ paciente.genero }}</p>
+                            <p class="mb-0"><strong>Tipo Sangre:</strong> {{ paciente.tipo_sangre }}</p>
+                        </div>
+                    </div>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <button type="submit" class="btn btn-danger">Sí, Eliminar</button>
+                            <a href="{% url 'crud:crud_pacientes' %}" class="btn btn-secondary">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

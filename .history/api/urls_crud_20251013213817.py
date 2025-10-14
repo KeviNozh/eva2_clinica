@@ -1,29 +1,23 @@
 """
-URLS PARA LAS VISTAS CRUD - Completo
+URLS PARA LAS VISTAS CRUD - Conexión real con PostgreSQL
 """
 from django.urls import path
 from . import views_crud
 
-app_name = 'crud'
+app_name = 'crud'  # ← AGREGAR ESTO
 
 urlpatterns = [
     # Pacientes
     path('pacientes/', views_crud.crud_pacientes, name='crud_pacientes'),
     path('pacientes/crear/', views_crud.crear_paciente, name='crear_paciente'),
-    path('pacientes/editar/<int:id>/', views_crud.editar_paciente, name='editar_paciente'),
-    path('pacientes/eliminar/<int:id>/', views_crud.eliminar_paciente, name='eliminar_paciente'),
     
     # Médicos
     path('medicos/', views_crud.crud_medicos, name='crud_medicos'),
     path('medicos/crear/', views_crud.crear_medico, name='crear_medico'),
-    path('medicos/editar/<int:id>/', views_crud.editar_medico, name='editar_medico'),
-    path('medicos/eliminar/<int:id>/', views_crud.eliminar_medico, name='eliminar_medico'),
-
+    
     # Especialidades
     path('especialidades/', views_crud.crud_especialidades, name='crud_especialidades'),
     path('especialidades/crear/', views_crud.crear_especialidad, name='crear_especialidad'),
-    path('especialidades/editar/<int:id>/', views_crud.editar_especialidad, name='editar_especialidad'),
-    path('especialidades/eliminar/<int:id>/', views_crud.eliminar_especialidad, name='eliminar_especialidad'),
     
     # Consultas
     path('consultas/', views_crud.crud_consultas, name='crud_consultas'),
