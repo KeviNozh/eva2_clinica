@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Editar Sala</title>
+    <meta charset="utf-8">
+    <style>
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .form-group { 
+            margin-bottom: 20px; 
+        }
+        label { 
+            display: block; 
+            margin-bottom: 5px; 
+            font-weight: bold;
+            color: #333;
+        }
+        input, select, textarea { 
+            width: 100%; 
+            padding: 10px;
+            border: 1px solid #ddd; 
+            border-radius: 4px; 
+            font-size: 14px;
+        }
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        .checkbox-group { 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+        }
+        .checkbox-group input { 
+            width: auto; 
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        .btn-primary { 
+            background: #007bff; 
+            color: white; 
+        }
+        .btn-primary:hover { 
+            background: #0056b3; 
+        }
+        .btn-secondary { 
+            background: #6c757d; 
+            color: white; 
+        }
+        .btn-secondary:hover { 
+            background: #545b62; 
+        }
+        .btn-danger { 
+            background: #dc3545; 
+            color: white; 
+        }
+        .btn-danger:hover { 
+            background: #c82333; 
+        }
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .error {
+            color: #dc3545;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Editar Sala: {{ form.instance.nombre }}</h1>
+        
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="id_nombre">Nombre de la Sala:</label>
+                {{ form.nombre }}
+                {% if form.nombre.errors %}
+                    <div class="error">{{ form.nombre.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="id_capacidad">Capacidad:</label>
+                {{ form.capacidad }}
+                {% if form.capacidad.errors %}
+                    <div class="error">{{ form.capacidad.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="id_tipo">Tipo de Sala:</label>
+                {{ form.tipo }}
+                {% if form.tipo.errors %}
+                    <div class="error">{{ form.tipo.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="id_descripcion">Descripción:</label>
+                {{ form.descripcion }}
+                {% if form.descripcion.errors %}
+                    <div class="error">{{ form.descripcion.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <div class="checkbox-group">
+                    {{ form.disponible }}
+                    <label for="id_disponible">Sala disponible</label>
+                </div>
+                {% if form.disponible.errors %}
+                    <div class="error">{{ form.disponible.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                <a href="{% url 'lista_salas' %}" class="btn btn-secondary">Cancelar</a>
+                <a href="{% url 'eliminar_sala' form.instance.id %}" class="btn btn-danger" 
+                   onclick="return confirm('¿Estás seguro de que quieres eliminar esta sala?')">
+                    Eliminar
+                </a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

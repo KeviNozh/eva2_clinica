@@ -83,7 +83,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'salud_vital_db',
         'USER': 'postgres',
-        'PASSWORD': '123456',  # Tu contraseña
+        'PASSWORD': '123456',
         'HOST': 'localhost',
         'PORT': '5432',
     }

@@ -1,0 +1,40 @@
+{% extends 'crud_base.html' %}
+
+{% block crud_content %}
+<header class="crud-header">
+  <div>
+    <div class="crud-title">🩺 Gestión de Tratamientos</div>
+    <div class="crud-subtitle">Administrar planes de tratamiento</div>
+  </div>
+  <div class="crud-actions">
+    <a href="/api/tratamientos/" class="btn btn-secondary" target="_blank">API</a>
+  </div>
+</header>
+
+<div class="crud-card">
+  <h3>Tratamientos Registrados</h3>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Consulta</th>
+        <th>Descripción</th>
+        <th>Duración (días)</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>#1 - Juan Pérez</td>
+        <td>Reposo y medicación para gripe</td>
+        <td>7</td>
+        <td class="action-buttons">
+          <button class="btn btn-edit btn-small">Editar</button>
+          <button class="btn btn-delete btn-small">Eliminar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+{% endblock %}

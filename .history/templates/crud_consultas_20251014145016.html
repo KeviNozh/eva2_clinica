@@ -1,0 +1,62 @@
+{% extends 'crud_base.html' %}
+
+{% block crud_content %}
+<header class="crud-header">
+  <div>
+    <div class="crud-title">📋 Gestión de Consultas Médicas</div>
+    <div class="crud-subtitle">Administrar historial de consultas</div>
+  </div>
+  <div class="crud-actions">
+    <a href="/api/consultas/" class="btn btn-secondary" target="_blank">API</a>
+  </div>
+</header>
+
+<div class="crud-card">
+  <h3>Consultas Registradas</h3>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Paciente</th>
+        <th>Médico</th>
+        <th>Fecha</th>
+        <th>Motivo</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for consulta in consultas %}
+      <tr>
+        <td>{{ consulta.id }}</td>
+        <td>{{ consulta.paciente.nombre }} {{ consulta.paciente.apellido }}</td>
+        <td>{{ consulta.medico.nombre }} {{ consulta.medico.apellido }}</td>
+        <td>{{ consulta.fecha|date:"d/m/Y H:i" }}</td>
+        <td>{{ consulta.motivo }}</td>
+        <td>
+          {% if consulta.estado == 'realizada' %}
+            <span style="color: #34d399;">Realizada</span>
+          {% elif consulta.estado == 'programada' %}
+            <span style="color: #fbbf24;">Programada</span>
+          {% else %}
+            <span style="color: #ef4444;">Cancelada</span>
+          {% endif %}
+        </td>
+        <td class="action-buttons">
+          <a href="#" class="btn btn-edit btn-small">Editar</a>
+          <form method="POST" action="{% url 'crud:eliminar_consulta' consulta.id %}" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-delete btn-small" onclick="return confirm('¿Eliminar consulta?')">Eliminar</button>
+            
+          </form>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="7" style="text-align: center; color: var(--muted);">No hay consultas registradas</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

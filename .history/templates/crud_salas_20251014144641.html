@@ -1,0 +1,55 @@
+{% extends 'crud_base.html' %}
+
+{% block crud_content %}
+<header class="crud-header">
+  <div>
+    <div class="crud-title">🏢 Gestión de Salas de Atención</div>
+    <div class="crud-subtitle">Administrar salas y disponibilidad</div>
+  </div>
+  <div class="crud-actions">
+    <a href="/api/salas/" class="btn btn-secondary" target="_blank">API</a>
+  </div>
+</header>
+
+<div class="crud-card">
+  <h3>Salas de Atención</h3>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Número</th>
+        <th>Piso</th>
+        <th>Tipo</th>
+        <th>Disponibilidad</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for sala in salas %}
+      <tr>
+        <td>{{ sala.numero }}</td>
+        <td>{{ sala.piso }}</td>
+        <td>{{ sala.tipo }}</td>
+        <td>
+          {% if sala.disponible %}
+            <span style="color: #34d399;">● Disponible</span>
+          {% else %}
+            <span style="color: #ef4444;">● Ocupada</span>
+          {% endif %}
+        </td>
+        <td class="action-buttons">
+          <a href="#" class="btn btn-edit btn-small">Editar</a>
+          <form method="POST" action="{% url 'crud:eliminar_sala' sala.id %}" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-delete btn-small" onclick="return confirm('¿Eliminar sala?')">Eliminar</button>
+          </form>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="5" style="text-align: center; color: var(--muted);">No hay salas registradas</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

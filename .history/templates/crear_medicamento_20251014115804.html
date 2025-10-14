@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block title %}Crear Medicamento - Salud Vital{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0"><i class="fas fa-pills"></i> Nuevo Medicamento</h4>
+                </div>
+                <div class="card-body">
+                    <!-- Mensajes -->
+                    {% if messages %}
+                    <div class="messages mb-3">
+                        {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Nombre *</label>
+                                <input type="text" class="form-control" name="nombre" required 
+                                       placeholder="Paracetamol 500mg">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Laboratorio</label>
+                                <input type="text" class="form-control" name="laboratorio" 
+                                       placeholder="LabChile">
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Stock</label>
+                                <input type="number" class="form-control" name="stock" value="0" min="0">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Precio Unitario</label>
+                                <input type="number" class="form-control" name="precio_unitario" 
+                                       step="0.01" value="0" min="0">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Tipo</label>
+                                <select class="form-select" name="tipo">
+                                    <option value="Tableta">Tableta</option>
+                                    <option value="Cápsula">Cápsula</option>
+                                    <option value="Jarabe">Jarabe</option>
+                                    <option value="Inyección">Inyección</option>
+                                    <option value="Otro">Otro</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-save"></i> Crear Medicamento
+                            </button>
+                            <a href="{% url 'crud:crud_medicamentos' %}" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
