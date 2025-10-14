@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Crear Tratamiento - Salud Vital{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title mb-0">
+                        <i class="fas fa-stethoscope me-2"></i>Crear Nuevo Tratamiento
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+
+                        <div class="mb-3">
+                            <label for="consulta" class="form-label">Consulta *</label>
+                            <select class="form-select" id="consulta" name="consulta" required>
+                                <option value="">Seleccione una consulta</option>
+                                {% for consulta in consultas %}
+                                    <option value="{{ consulta.id }}">
+                                        {{ consulta.paciente.nombre }} {{ consulta.paciente.apellido }} - 
+                                        Dr. {{ consulta.medico.user.first_name }} - 
+                                        {{ consulta.fecha|date:"d/m/Y" }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="medicamento" class="form-label">Medicamento</label>
+                            <input type="text" class="form-control" id="medicamento" name="medicamento" 
+                                   placeholder="Nombre del medicamento">
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="dosis" class="form-label">Dosis</label>
+                                <input type="text" class="form-control" id="dosis" name="dosis" 
+                                       placeholder="Ej: 500mg cada 8 horas">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="duracion" class="form-label">Duración</label>
+                                <input type="text" class="form-control" id="duracion" name="duracion" 
+                                       placeholder="Ej: 7 días">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="instrucciones" class="form-label">Instrucciones</label>
+                            <textarea class="form-control" id="instrucciones" name="instrucciones" 
+                                      rows="4" placeholder="Instrucciones adicionales para el tratamiento"></textarea>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{% url 'crud_tratamientos' %}" class="btn btn-secondary me-md-2">
+                                <i class="fas fa-arrow-left me-1"></i>Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-1"></i>Crear Tratamiento
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

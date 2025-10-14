@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}Crear Tratamiento - Salud Vital{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Crear Nuevo Tratamiento</h2>
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="consulta" class="form-label">Consulta *</label>
+                        <select class="form-select" id="consulta" name="consulta" required>
+                            <option value="">Seleccione una consulta</option>
+                            {% for consulta in consultas %}
+                                <option value="{{ consulta.id }}">{{ consulta.paciente.nombre }} {{ consulta.paciente.apellido }} - {{ consulta.fecha }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label for="medicamento" class="form-label">Medicamento</label>
+                        <input type="text" class="form-control" id="medicamento" name="medicamento" placeholder="Nombre del medicamento">
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="dosis" class="form-label">Dosis</label>
+                        <input type="text" class="form-control" id="dosis" name="dosis" placeholder="Ej: 500mg cada 8 horas">
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label for="duracion" class="form-label">Duración</label>
+                        <input type="text" class="form-control" id="duracion" name="duracion" placeholder="Ej: 7 días">
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="instrucciones" class="form-label">Instrucciones</label>
+                    <textarea class="form-control" id="instrucciones" name="instrucciones" rows="4" placeholder="Instrucciones adicionales para el tratamiento"></textarea>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-3">
+            <button type="submit" class="btn btn-primary">Crear Tratamiento</button>
+            <a href="{% url 'crud_tratamientos' %}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

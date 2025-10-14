@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Crear Tratamiento - Salud Vital{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title mb-0">
+                        <i class="fas fa-plus-circle me-2"></i>Crear Nuevo Tratamiento
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+
+                        <div class="mb-3">
+                            <label for="consulta" class="form-label">Consulta *</label>
+                            <select class="form-select {% if form.consulta.errors %}is-invalid{% endif %}" 
+                                    id="consulta" name="consulta" required>
+                                <option value="">Seleccione una consulta</option>
+                                {% for consulta in consultas %}
+                                    <option value="{{ consulta.id }}" 
+                                            {% if request.POST.consulta == consulta.id|stringformat:"i" %}selected{% endif %}>
+                                        {{ consulta.paciente.nombre }} {{ consulta.paciente.apellido }} - {{ consulta.fecha|date:"d/m/Y" }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                            {% if form.consulta.errors %}
+                                <div class="invalid-feedback">
+                                    {{ form.consulta.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="medicamento" class="form-label">Medicamento</label>
+                            <input type="text" class="form-control {% if form.medicamento.errors %}is-invalid{% endif %}" 
+                                   id="medicamento" name="medicamento" 
+                                   value="{{ request.POST.medicamento }}"
+                                   placeholder="Nombre del medicamento">
+                            {% if form.medicamento.errors %}
+                                <div class="invalid-feedback">
+                                    {{ form.medicamento.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="dosis" class="form-label">Dosis</label>
+                                <input type="text" class="form-control {% if form.dosis.errors %}is-invalid{% endif %}" 
+                                       id="dosis" name="dosis" 
+                                       value="{{ request.POST.dosis }}"
+                                       placeholder="Ej: 500mg cada 8 horas">
+                                {% if form.dosis.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ form.dosis.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="duracion" class="form-label">Duración</label>
+                                <input type="text" class="form-control {% if form.duracion.errors %}is-invalid{% endif %}" 
+                                       id="duracion" name="duracion" 
+                                       value="{{ request.POST.duracion }}"
+                                       placeholder="Ej: 7 días">
+                                {% if form.duracion.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ form.duracion.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="instrucciones" class="form-label">Instrucciones</label>
+                            <textarea class="form-control {% if form.instrucciones.errors %}is-invalid{% endif %}" 
+                                      id="instrucciones" name="instrucciones" 
+                                      rows="4" placeholder="Instrucciones adicionales para el tratamiento">{{ request.POST.instrucciones }}</textarea>
+                            {% if form.instrucciones.errors %}
+                                <div class="invalid-feedback">
+                                    {{ form.instrucciones.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{% url 'crud_tratamientos' %}" class="btn btn-secondary me-md-2">
+                                <i class="fas fa-arrow-left me-1"></i>Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-1"></i>Crear Tratamiento
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

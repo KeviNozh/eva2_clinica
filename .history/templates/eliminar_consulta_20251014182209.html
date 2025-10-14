@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Eliminar Consulta - Salud Vital{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-6 mx-auto">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h3 class="card-title mb-0">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Confirmar Eliminación
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <p class="lead">¿Está seguro que desea eliminar la siguiente consulta?</p>
+                    
+                    <div class="alert alert-warning">
+                        <strong>Paciente:</strong> {{ consulta.paciente.nombre }} {{ consulta.paciente.apellido }}<br>
+                        <strong>Médico:</strong> Dr. {{ consulta.medico.user.first_name }} {{ consulta.medico.user.last_name }}<br>
+                        <strong>Fecha:</strong> {{ consulta.fecha|date:"d/m/Y H:i" }}<br>
+                        <strong>Motivo:</strong> {{ consulta.motivo }}
+                    </div>
+
+                    <p class="text-danger">
+                        <i class="fas fa-exclamation-circle me-1"></i>
+                        Esta acción no se puede deshacer.
+                    </p>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{% url 'crud_consultas' %}" class="btn btn-secondary me-md-2">
+                                <i class="fas fa-times me-1"></i>Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash me-1"></i>Eliminar Consulta
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Crear Consulta - Salud Vital{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title mb-0">
+                        <i class="fas fa-calendar-plus me-2"></i>Crear Nueva Consulta
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="paciente" class="form-label">Paciente *</label>
+                                <select class="form-select" id="paciente" name="paciente" required>
+                                    <option value="">Seleccione un paciente</option>
+                                    {% for paciente in pacientes %}
+                                        <option value="{{ paciente.id }}" 
+                                                {% if request.POST.paciente == paciente.id|stringformat:"i" %}selected{% endif %}>
+                                            {{ paciente.nombre }} {{ paciente.apellido }} - {{ paciente.rut }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="medico" class="form-label">Médico *</label>
+                                <select class="form-select" id="medico" name="medico" required>
+                                    <option value="">Seleccione un médico</option>
+                                    {% for medico in medicos %}
+                                        <option value="{{ medico.id }}" 
+                                                {% if request.POST.medico == medico.id|stringformat:"i" %}selected{% endif %}>
+                                            Dr. {{ medico.user.first_name }} {{ medico.user.last_name }} - {{ medico.especialidad.nombre }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="sala" class="form-label">Sala</label>
+                                <select class="form-select" id="sala" name="sala">
+                                    <option value="">Seleccione una sala</option>
+                                    {% for sala in salas %}
+                                        <option value="{{ sala.id }}" 
+                                                {% if request.POST.sala == sala.id|stringformat:"i" %}selected{% endif %}>
+                                            {{ sala.nombre }} - Piso {{ sala.piso }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="fecha" class="form-label">Fecha y Hora *</label>
+                                <input type="datetime-local" class="form-control" id="fecha" name="fecha" 
+                                       value="{{ request.POST.fecha }}" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="motivo" class="form-label">Motivo de la Consulta *</label>
+                            <textarea class="form-control" id="motivo" name="motivo" rows="3" 
+                                      placeholder="Describa el motivo de la consulta" required>{{ request.POST.motivo }}</textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="diagnostico" class="form-label">Diagnóstico</label>
+                            <textarea class="form-control" id="diagnostico" name="diagnostico" rows="3" 
+                                      placeholder="Diagnóstico de la consulta">{{ request.POST.diagnostico }}</textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="estado" class="form-label">Estado *</label>
+                            <select class="form-select" id="estado" name="estado" required>
+                                <option value="programada" {% if request.POST.estado == 'programada' %}selected{% endif %}>Programada</option>
+                                <option value="completada" {% if request.POST.estado == 'completada' %}selected{% endif %}>Completada</option>
+                                <option value="cancelada" {% if request.POST.estado == 'cancelada' %}selected{% endif %}>Cancelada</option>
+                            </select>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{% url 'crud_consultas' %}" class="btn btn-secondary me-md-2">
+                                <i class="fas fa-arrow-left me-1"></i>Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-1"></i>Crear Consulta
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

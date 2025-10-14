@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Eliminar Sala - Salud Vital</title>
+  <style>
+  :root{
+    --bg:#0f172a; --white:#ffffff; --muted:#9aa4b2;
+    --c1-start:#7c3aed; --c1-end:#06b6d4;
+    --c2-start:#ff7a59; --c2-end:#ffb86b;
+    --c3-start:#ef4444; --c3-end:#f97316;
+    --radius:14px; --shadow-lg: 0 18px 60px rgba(2,6,23,0.5);
+    --max-width:600px;
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    color-scheme: dark;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;background:
+    radial-gradient(600px 300px at 10% 10%, rgba(124,58,237,0.12), transparent 10%),
+    radial-gradient(500px 240px at 90% 70%, rgba(6,182,212,0.08), transparent 8%),
+    var(--bg);
+    -webkit-font-smoothing:antialiased;color:var(--white);
+  }
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:var(--max-width);margin:30px auto;padding:20px}
+
+  /* Header */
+  header.site{
+    display:flex;align-items:center;gap:16px;padding:18px;border-radius:12px;
+    background: linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+    border: 1px solid rgba(255,255,255,0.04);
+    box-shadow: 0 8px 30px rgba(2,6,23,0.45); margin-bottom: 20px;
+  }
+  .brand{display:flex;gap:12px;align-items:center}
+  .logo{
+    width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,var(--c3-start),var(--c3-end));
+    display:grid;place-items:center;font-weight:900;font-size:16px;color:var(--white);
+  }
+  .brand .title{font-weight:800;font-size:16px}
+  .brand .subtitle{font-size:12px;color:var(--muted);margin-top:2px}
+
+  /* Warning Card */
+  .warning-card{
+    background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+    border-radius:var(--radius);padding:30px;box-shadow:var(--shadow-lg);
+    border: 1px solid rgba(239,68,68,0.3);
+  }
+
+  .warning-header{
+    display:flex; align-items:center; gap:12px; margin-bottom:20px;
+    color:#ef4444; font-size:18px; font-weight:700;
+  }
+
+  .sala-info{
+    background:rgba(255,255,255,0.03); padding:20px; border-radius:8px;
+    border:1px solid rgba(255,255,255,0.05); margin:20px 0;
+  }
+  .sala-info h3{color:var(--white); margin:0 0 10px 0;}
+  .info-row{display:flex; gap:15px; margin-bottom:5px;}
+  .info-label{color:var(--muted); min-width:100px;}
+  .info-value{color:var(--white);}
+
+  /* Buttons */
+  .btn{
+    padding:12px 24px;border-radius:10px;border:0;font-weight:700;cursor:pointer;
+    color:var(--white);font-size:14px; display:inline-flex; align-items:center; gap:8px;
+    transition:all 0.2s ease;
+  }
+  .btn:hover{transform:translateY(-1px);}
+  .btn-danger{background:linear-gradient(90deg,var(--c3-start),var(--c3-end))}
+  .btn-secondary{background:linear-gradient(90deg,var(--c1-start),var(--c1-end))}
+
+  .form-actions{display:flex;gap:12px;margin-top:30px;}
+
+  @media (max-width:768px){
+    .form-actions{flex-direction:column;}
+    .wrap{padding:15px;}
+    .warning-card{padding:20px;}
+    .info-row{flex-direction:column; gap:5px;}
+  }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <!-- Header -->
+    <header class="site">
+      <div class="brand">
+        <div class="logo">⚠️</div>
+        <div>
+          <div class="title">Eliminar Sala</div>
+          <div class="subtitle">Confirmar eliminación</div>
+        </div>
+      </div>
+      <a href="{% url 'crud:crud_salas' %}" class="btn btn-secondary">← Volver</a>
+    </header>
+
+    <!-- Warning Content -->
+    <div class="warning-card">
+      <div class="warning-header">
+        ⚠️ Confirmar Eliminación
+      </div>
+
+      <p style="color:var(--muted); margin-bottom:20px; line-height:1.5;">
+        <strong>¿Estás seguro de que deseas eliminar esta sala?</strong><br>
+        Esta acción no se puede deshacer y eliminará permanentemente la sala del sistema.
+      </p>
+
+      <div class="sala-info">
+        <h3>{{ sala.nombre }}</h3>
+        <div class="info-row">
+          <span class="info-label">Número:</span>
+          <span class="info-value">{{ sala.numero }}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Piso:</span>
+          <span class="info-value">{{ sala.piso }}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Capacidad:</span>
+          <span class="info-value">{{ sala.capacidad }} personas</span>
+        </div>
+      </div>
+
+      <form method="post">
+        {% csrf_token %}
+        <div class="form-actions">
+          <button type="submit" class="btn btn-danger">
+            🗑️ Sí, Eliminar Sala
+          </button>
+          <a href="{% url 'crud:crud_salas' %}" class="btn btn-secondary">
+            ❌ Cancelar
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

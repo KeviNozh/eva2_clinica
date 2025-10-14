@@ -5,32 +5,6 @@ Define todas las entidades del sistema médico
 from django.db import models
 from django.contrib.auth.models import User
 
-
-class Sala(models.Model):
-    # Opciones para el campo tipo
-    TIPOS_SALA = [
-        ('consulta', 'Consulta'),
-        ('procedimiento', 'Procedimiento'),
-        ('urgencia', 'Urgencia'),
-        ('hospitalizacion', 'Hospitalización'),
-        ('operaciones', 'Sala de Operaciones'),
-    ]
-    
-    nombre = models.CharField(max_length=100)
-    capacidad = models.IntegerField()
-    descripcion = models.TextField(blank=True, null=True)
-    tipo = models.CharField(
-        max_length=20, 
-        choices=TIPOS_SALA, 
-        default='consulta'
-    )
-    disponible = models.BooleanField(default=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    
-    def __str__(self):
-        return f"{self.nombre} ({self.get_tipo_display()})"
-
 class Especialidad(models.Model):
     """Modelo para especialidades médicas"""
     nombre = models.CharField(max_length=100)
@@ -130,16 +104,14 @@ class Medicamento(models.Model):
         return self.nombre
 
 class Tratamiento(models.Model):
-    """Modelo para tratamientos médicos"""
     consulta = models.ForeignKey(Consulta, on_delete=models.CASCADE)
-    descripcion = models.TextField()
-    fecha_inicio = models.DateField()
-    fecha_fin = models.DateField()
-    instrucciones = models.TextField(blank=True, default='')
+    medicamento = models.CharField(max_length=200, blank=True, null=True)
+    dosis = models.CharField(max_length=100, blank=True, null=True)
+    duracion = models.CharField(max_length=100, blank=True, null=True)
+    instrucciones = models.TextField(blank=True, null=True)
+    fecha_creacion = models.DateTimeField(auto_now_add=True)  # Este sí existe
+    # fecha_inicio y fecha_fin probablemente NO existen
     
-    def __str__(self):
-        return f"Tratamiento {self.id} - {self.consulta}"
-
 class Receta(models.Model):
     """Modelo para recetas médicas"""
     consulta = models.ForeignKey(Consulta, on_delete=models.CASCADE)
