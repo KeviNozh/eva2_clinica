@@ -12,55 +12,23 @@ class Especialidad(models.Model):
     def __str__(self):
         return self.nombre
 
-    class Meta:
-        verbose_name_plural = "Especialidades"
-
-class Sala(models.Model):
-    TIPO_CHOICES = [
-        ('Consulta', 'Consulta'),
-        ('Emergencia', 'Emergencia'),
-        ('Operaciones', 'Operaciones'),
-        ('Recuperación', 'Recuperación'),
-        ('Exámenes', 'Exámenes'),
-        ('Hospitalización', 'Hospitalización'),
-    ]
-    
-    ESTADO_CHOICES = [
-        ('Disponible', 'Disponible'),
-        ('Ocupada', 'Ocupada'),
-        ('Mantenimiento', 'En Mantenimiento'),
-        ('Limpieza', 'En Limpieza'),
-    ]
-    
-    nombre = models.CharField(max_length=100)
-    numero = models.CharField(max_length=10)
-    piso = models.IntegerField(default=1)
-    capacidad = models.IntegerField(default=5)
-    tipo = models.CharField(max_length=20, choices=TIPO_CHOICES, default='Consulta')
-    especialidad = models.ForeignKey(Especialidad, on_delete=models.SET_NULL, null=True, blank=True)
-    equipamiento = models.TextField(blank=True, default='')
-    disponible = models.BooleanField(default=True)
-    estado = models.CharField(max_length=20, choices=ESTADO_CHOICES, default='Disponible')
-    descripcion = models.TextField(blank=True, default='')
-    
-    def __str__(self):
-        return f"Sala {self.numero} - {self.nombre}"
-
+clas    
 class Medico(models.Model):
     """Modelo para médicos del sistema"""
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     especialidad = models.ForeignKey(Especialidad, on_delete=models.CASCADE)
-    telefono = models.CharField(max_length=15, blank=True, default='')
-    direccion = models.TextField(blank=True, default='')
+    telefono = models.CharField(max_length=15, blank=True, default='')  # Campo opcional
+    direccion = models.TextField(blank=True, default='')  # Campo opcional
     
     def __str__(self):
         return f"Dr. {self.user.first_name} {self.user.last_name}"
 
 class Paciente(models.Model):
+    """Modelo para pacientes del sistema"""
     GENERO_CHOICES = [
-        ('Masculino', 'Masculino'),
-        ('Femenino', 'Femenino'),
-        ('Otro', 'Otro'),
+        ('M', 'Masculino'),
+        ('F', 'Femenino'),
+        ('O', 'Otro'),
     ]
     
     TIPO_SANGRE_CHOICES = [
@@ -74,9 +42,8 @@ class Paciente(models.Model):
     nombre = models.CharField(max_length=100)
     apellido = models.CharField(max_length=100)
     fecha_nacimiento = models.DateField()
-    # CORREGIDO: Cambiar max_length de 1 a 10
-    genero = models.CharField(max_length=10, choices=GENERO_CHOICES, default='Masculino')
-    tipo_sangre = models.CharField(max_length=3, choices=TIPO_SANGRE_CHOICES, default='O+')
+    genero = models.CharField(max_length=1, choices=GENERO_CHOICES, default='M')  # Valor por defecto
+    tipo_sangre = models.CharField(max_length=3, choices=TIPO_SANGRE_CHOICES, default='O+')  # Valor por defecto
     telefono = models.CharField(max_length=15, blank=True, default='')
     correo = models.EmailField(blank=True, default='')
     direccion = models.TextField(blank=True, default='')
@@ -85,10 +52,10 @@ class Paciente(models.Model):
         
     def __str__(self):
         return f"{self.nombre} {self.apellido} ({self.rut})"
-    
+
 class Consulta(models.Model):
     """Modelo para consultas médicas"""
-    ESTADO_CHOICES = [
+    ESTADO_CHOICES = [  # MEJORA 1: USO DE CHOICES
         ('programada', 'Programada'),
         ('realizada', 'Realizada'),
         ('cancelada', 'Cancelada'),
@@ -133,11 +100,9 @@ class Tratamiento(models.Model):
     dosis = models.CharField(max_length=100, blank=True, null=True)
     duracion = models.CharField(max_length=100, blank=True, null=True)
     instrucciones = models.TextField(blank=True, null=True)
-    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    fecha_creacion = models.DateTimeField(auto_now_add=True)  # Este sí existe
+    # fecha_inicio y fecha_fin probablemente NO existen
     
-    def __str__(self):
-        return f"Tratamiento {self.id} - {self.consulta}"
-
 class Receta(models.Model):
     """Modelo para recetas médicas"""
     consulta = models.ForeignKey(Consulta, on_delete=models.CASCADE)
@@ -151,7 +116,7 @@ class Receta(models.Model):
         return f"Receta {self.id} - {self.medicamento}"
 
 class SeguimientoPaciente(models.Model):
-    """Seguimiento de pacientes"""
+    """MEJORA 2: NUEVA TABLA - Seguimiento de pacientes"""
     paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE)
     medico = models.ForeignKey(Medico, on_delete=models.CASCADE)
     fecha_seguimiento = models.DateField()

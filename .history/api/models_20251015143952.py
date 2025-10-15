@@ -57,10 +57,11 @@ class Medico(models.Model):
         return f"Dr. {self.user.first_name} {self.user.last_name}"
 
 class Paciente(models.Model):
+    """Modelo para pacientes del sistema"""
     GENERO_CHOICES = [
-        ('Masculino', 'Masculino'),
-        ('Femenino', 'Femenino'),
-        ('Otro', 'Otro'),
+        ('M', 'Masculino'),
+        ('F', 'Femenino'),
+        ('O', 'Otro'),
     ]
     
     TIPO_SANGRE_CHOICES = [
@@ -74,8 +75,7 @@ class Paciente(models.Model):
     nombre = models.CharField(max_length=100)
     apellido = models.CharField(max_length=100)
     fecha_nacimiento = models.DateField()
-    # CORREGIDO: Cambiar max_length de 1 a 10
-    genero = models.CharField(max_length=10, choices=GENERO_CHOICES, default='Masculino')
+    genero = models.CharField(max_length=1, choices=GENERO_CHOICES, default='M')
     tipo_sangre = models.CharField(max_length=3, choices=TIPO_SANGRE_CHOICES, default='O+')
     telefono = models.CharField(max_length=15, blank=True, default='')
     correo = models.EmailField(blank=True, default='')
@@ -85,7 +85,7 @@ class Paciente(models.Model):
         
     def __str__(self):
         return f"{self.nombre} {self.apellido} ({self.rut})"
-    
+
 class Consulta(models.Model):
     """Modelo para consultas médicas"""
     ESTADO_CHOICES = [

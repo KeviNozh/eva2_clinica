@@ -73,10 +73,8 @@ def crud_especialidades(request):
     return render(request, 'crud_especialidades.html', {'especialidades': especialidades})
 
 def crud_salas(request):
-    """Vista para listar salas - CORREGIDA"""
-    # Cargar solo los campos básicos para evitar errores
-    salas = Sala.objects.only('id', 'nombre', 'numero', 'piso', 'capacidad').all()
-    
+    """Vista para listar salas"""
+    salas = Sala.objects.all()
     return render(request, 'crud_salas.html', {'salas': salas})
 
 def crud_seguimientos(request):
@@ -86,15 +84,20 @@ def crud_seguimientos(request):
 
 def crud_consultas(request):
     """Vista para listar consultas - CORREGIDA"""
-    # Cargar consultas sin los campos problemáticos de Sala
-    consultas = Consulta.objects.select_related('paciente', 'medico').all()
-    
-    return render(request, 'crud_consultas.html', {'consultas': consultas})
+    try:
+        # Intentar cargar con relaciones completas
+        consultas = Consulta.objects.all().select_related('paciente', 'medico', 'sala')
+        return render(request, 'crud_consultas.html', {'consultas': consultas})
+    except Exception as e:
+        # Si hay error, cargar sin relación con sala
+        consultas = Consulta.objects.all().select_related('paciente', 'medico')
+        messages.warning(request, 'Algunos datos de salas no están disponibles')
+        return render(request, 'crud_consultas.html', {'consultas': consultas})
 
 # ========== CREAR ==========
 
 def crear_paciente(request):
-    """Vista para crear paciente - CORREGIDA"""
+    """Vista para crear paciente"""
     if request.method == 'POST':
         try:
             Paciente.objects.create(
@@ -102,7 +105,7 @@ def crear_paciente(request):
                 nombre=request.POST['nombre'],
                 apellido=request.POST['apellido'],
                 fecha_nacimiento=request.POST['fecha_nacimiento'],
-                genero=request.POST['genero'],  # Ahora acepta valores completos
+                genero=request.POST['genero'],
                 tipo_sangre=request.POST['tipo_sangre'],
                 telefono=request.POST.get('telefono', ''),
                 correo=request.POST.get('correo', ''),
@@ -240,12 +243,17 @@ def crear_sala(request):
     })
 
 def crear_consulta(request):
-    """Vista para crear consulta - CORREGIDA"""
+    """Vista para crear consulta"""
     pacientes = Paciente.objects.all()
     medicos = Medico.objects.all()
     
-    # Cargar solo los campos básicos de Sala para evitar errores
-    salas = Sala.objects.only('id', 'nombre', 'piso', 'numero', 'capacidad').all()
+    try:
+        # Intentar cargar salas normalmente
+        salas = Sala.objects.all()
+    except Exception as e:
+        # Si hay error, cargar salas sin los campos nuevos
+        salas = []
+        messages.warning(request, 'Algunos datos de salas no están disponibles')
     
     if request.method == 'POST':
         try:
@@ -311,7 +319,7 @@ def crear_seguimiento(request):
 # ========== EDITAR ==========
 
 def editar_paciente(request, id):
-    """Vista para editar paciente - CORREGIDA"""
+    """Vista para editar paciente"""
     paciente = get_object_or_404(Paciente, id=id)
     
     if request.method == 'POST':
@@ -320,7 +328,7 @@ def editar_paciente(request, id):
             paciente.nombre = request.POST['nombre']
             paciente.apellido = request.POST['apellido']
             paciente.fecha_nacimiento = request.POST['fecha_nacimiento']
-            paciente.genero = request.POST['genero']  # Ahora acepta valores completos
+            paciente.genero = request.POST['genero']
             paciente.tipo_sangre = request.POST['tipo_sangre']
             paciente.telefono = request.POST.get('telefono', '')
             paciente.correo = request.POST.get('correo', '')
@@ -439,13 +447,11 @@ def editar_sala(request, id):
     })
 
 def editar_consulta(request, id):
-    """Vista para editar consulta - CORREGIDA"""
+    """Vista para editar consulta"""
     consulta = get_object_or_404(Consulta, id=id)
     pacientes = Paciente.objects.all()
     medicos = Medico.objects.all()
-    
-    # Cargar solo los campos básicos de Sala para evitar errores
-    salas = Sala.objects.only('id', 'nombre', 'piso', 'numero', 'capacidad').all()
+    salas = Sala.objects.all()
     
     if request.method == 'POST':
         try:

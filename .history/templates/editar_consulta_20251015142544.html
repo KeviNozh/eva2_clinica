@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block title %}Gestión de Consultas - Salud Vital{% endblock %}
+{% block page_title %}🏥 Gestión de Consultas Médicas{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <p class="text-muted mb-0">Administrar consultas médicas del sistema</p>
+        </div>
+        <div>
+            <a href="{% url 'crud:crear_consulta' %}" class="btn btn-primary-custom">
+                <i class="fas fa-plus me-1"></i> Nueva Consulta
+            </a>
+        </div>
+    </div>
+
+    <!-- Tabla de Consultas -->
+    <div class="card-custom">
+        <div class="card-body">
+            <h5 class="card-title mb-3"><i class="fas fa-list me-2"></i>Lista de Consultas</h5>
+            
+            {% if consultas %}
+            <div class="table-responsive">
+                <table class="table table-custom table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Paciente</th>
+                            <th>Médico</th>
+                            <th>Fecha</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for consulta in consultas %}
+                        <tr>
+                            <td><strong>#{{ consulta.id }}</strong></td>
+                            <td>
+                                <strong>{{ consulta.paciente.nombre }} {{ consulta.paciente.apellido }}</strong>
+                                <br><small class="text-muted">{{ consulta.paciente.rut }}</small>
+                            </td>
+                            <td>
+                                Dr. {{ consulta.medico.user.first_name }} {{ consulta.medico.user.last_name }}
+                                <br><small class="text-muted">{{ consulta.medico.especialidad.nombre }}</small>
+                            </td>
+                            <td>
+                                {{ consulta.fecha|date:"d/m/Y" }}
+                                <br><small class="text-muted">{{ consulta.fecha|date:"H:i" }}</small>
+                            </td>
+                            <td>
+                                <span class="badge 
+                                    {% if consulta.estado == 'realizada' %}bg-success
+                                    {% elif consulta.estado == 'programada' %}bg-primary
+                                    {% elif consulta.estado == 'cancelada' %}bg-danger
+                                    {% else %}bg-warning{% endif %}">
+                                    {{ consulta.estado|title }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="btn-group btn-group-sm">
+                                    <a href="{% url 'crud:editar_consulta' consulta.id %}" class="btn btn-outline-primary" title="Editar">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="{% url 'crud:eliminar_consulta' consulta.id %}" class="btn btn-outline-danger" title="Eliminar">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
+                <h4 class="text-muted">No se encontraron consultas</h4>
+                <p class="text-muted">No hay consultas registradas en el sistema.</p>
+                <a href="{% url 'crud:crear_consulta' %}" class="btn btn-primary-custom">
+                    <i class="fas fa-plus me-1"></i> Crear Primera Consulta
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

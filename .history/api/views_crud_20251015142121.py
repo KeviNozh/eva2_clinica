@@ -72,11 +72,192 @@ def crud_especialidades(request):
     especialidades = Especialidad.objects.all()
     return render(request, 'crud_especialidades.html', {'especialidades': especialidades})
 
-def crud_salas(request):
-    """Vista para listar salas - CORREGIDA"""
-    # Cargar solo los campos básicos para evitar errores
-    salas = Sala.objects.only('id', 'nombre', 'numero', 'piso', 'capacidad').all()
+def crud_consultas(request):
+    """Vista para listar consultas"""
+    consultas = Consulta.objects.all()
+    return render(request, 'crud_consultas.html', {'consultas': consultas})
+
+# Vistas para Recetas
+def crud_recetas(request):
+    from .models import Receta
+    recetas = Receta.objects.all().select_related('consulta__paciente', 'consulta__medico', 'medicamento')
+    return render(request, 'crud_recetas.html', {'recetas': recetas})
+
+def crear_receta(request):
+    from .models import Consulta, Medicamento, Receta
+    from django.contrib import messages
     
+    consultas = Consulta.objects.all().select_related('paciente', 'medico')
+    medicamentos = Medicamento.objects.all()
+    
+    if request.method == 'POST':
+        try:
+            consulta_id = request.POST.get('consulta')
+            medicamento_id = request.POST.get('medicamento')
+            dosis = request.POST.get('dosis')
+            frecuencia = request.POST.get('frecuencia')
+            duracion = request.POST.get('duracion')
+            instrucciones = request.POST.get('instrucciones')
+            
+            receta = Receta(
+                consulta_id=consulta_id,
+                medicamento_id=medicamento_id,
+                dosis=dosis,
+                frecuencia=frecuencia,
+                duracion=duracion,
+                instrucciones=instrucciones
+            )
+            receta.save()
+            
+            messages.success(request, 'Receta creada exitosamente.')
+            return redirect('crud_recetas')
+            
+        except Exception as e:
+            messages.error(request, f'Error al crear receta: {str(e)}')
+    
+    return render(request, 'crear_receta.html', {
+        'consultas': consultas,
+        'medicamentos': medicamentos
+    })
+
+def editar_receta(request, id):
+    from .models import Receta, Consulta, Medicamento
+    from django.contrib import messages
+    
+    try:
+        receta = Receta.objects.get(id=id)
+        consultas = Consulta.objects.all().select_related('paciente', 'medico')
+        medicamentos = Medicamento.objects.all()
+        
+        if request.method == 'POST':
+            receta.consulta_id = request.POST.get('consulta')
+            receta.medicamento_id = request.POST.get('medicamento')
+            receta.dosis = request.POST.get('dosis')
+            receta.frecuencia = request.POST.get('frecuencia')
+            receta.duracion = request.POST.get('duracion')
+            receta.instrucciones = request.POST.get('instrucciones')
+            receta.save()
+            
+            messages.success(request, 'Receta actualizada exitosamente.')
+            return redirect('crud_recetas')
+            
+        return render(request, 'editar_receta.html', {
+            'receta': receta,
+            'consultas': consultas,
+            'medicamentos': medicamentos
+        })
+        
+    except Receta.DoesNotExist:
+        messages.error(request, 'La receta no existe.')
+        return redirect('crud_recetas')
+
+def eliminar_receta(request, id):
+    from .models import Receta
+    from django.contrib import messages
+    
+    try:
+        receta = Receta.objects.get(id=id)
+        if request.method == 'POST':
+            receta.delete()
+            messages.success(request, 'Receta eliminada exitosamente.')
+            return redirect('crud_recetas')
+            
+        return render(request, 'eliminar_receta.html', {'receta': receta})
+        
+    except Receta.DoesNotExist:
+        messages.error(request, 'La receta no existe.')
+        return redirect('crud_recetas')
+    
+# Vistas para Tratamientos
+def crud_tratamientos(request):
+    from .models import Tratamiento
+    tratamientos = Tratamiento.objects.all().select_related('consulta__paciente', 'consulta__medico')
+    return render(request, 'crud_tratamientos.html', {'tratamientos': tratamientos})
+
+def crear_tratamiento(request):
+    from .models import Consulta, Tratamiento
+    from django.contrib import messages
+    
+    consultas = Consulta.objects.all().select_related('paciente', 'medico')
+    
+    if request.method == 'POST':
+        try:
+            consulta_id = request.POST.get('consulta')
+            medicamento = request.POST.get('medicamento')
+            dosis = request.POST.get('dosis')
+            duracion = request.POST.get('duracion')
+            instrucciones = request.POST.get('instrucciones')
+            
+            tratamiento = Tratamiento(
+                consulta_id=consulta_id,
+                medicamento=medicamento,
+                dosis=dosis,
+                duracion=duracion,
+                instrucciones=instrucciones
+            )
+            tratamiento.save()
+            
+            messages.success(request, 'Tratamiento creado exitosamente.')
+            return redirect('crud_tratamientos')
+            
+        except Exception as e:
+            messages.error(request, f'Error al crear tratamiento: {str(e)}')
+    
+    return render(request, 'crear_tratamiento.html', {
+        'consultas': consultas
+    })
+
+def editar_tratamiento(request, id):
+    from .models import Tratamiento, Consulta, Medicamento
+    from django.contrib import messages
+    
+    try:
+        tratamiento = Tratamiento.objects.get(id=id)
+        consultas = Consulta.objects.all().select_related('paciente', 'medico')
+        medicamentos = Medicamento.objects.all()  # ← ESTA LÍNEA ES CLAVE
+        
+        if request.method == 'POST':
+            tratamiento.consulta_id = request.POST.get('consulta')
+            tratamiento.medicamento_id = request.POST.get('medicamento')
+            tratamiento.dosis = request.POST.get('dosis')
+            tratamiento.frecuencia = request.POST.get('frecuencia')
+            tratamiento.duracion = request.POST.get('duracion')
+            tratamiento.instrucciones = request.POST.get('instrucciones')
+            tratamiento.save()
+            
+            messages.success(request, 'Tratamiento actualizado exitosamente.')
+            return redirect('crud_tratamientos')
+            
+        return render(request, 'editar_tratamiento.html', {
+            'tratamiento': tratamiento,
+            'consultas': consultas,
+            'medicamentos': medicamentos  # ← PASA LOS MEDICAMENTOS AL TEMPLATE
+        })
+        
+    except Tratamiento.DoesNotExist:
+        messages.error(request, 'El tratamiento no existe.')
+        return redirect('crud_tratamientos')
+
+def eliminar_tratamiento(request, id):
+    from .models import Tratamiento
+    from django.contrib import messages
+    
+    try:
+        tratamiento = Tratamiento.objects.get(id=id)
+        if request.method == 'POST':
+            tratamiento.delete()
+            messages.success(request, 'Tratamiento eliminado exitosamente.')
+            return redirect('crud_tratamientos')
+            
+        return render(request, 'eliminar_tratamiento.html', {'tratamiento': tratamiento})
+        
+    except Tratamiento.DoesNotExist:
+        messages.error(request, 'El tratamiento no existe.')
+        return redirect('crud_tratamientos')
+
+def crud_salas(request):
+    """Vista para listar salas"""
+    salas = Sala.objects.all()
     return render(request, 'crud_salas.html', {'salas': salas})
 
 def crud_seguimientos(request):
@@ -84,17 +265,10 @@ def crud_seguimientos(request):
     seguimientos = SeguimientoPaciente.objects.all()
     return render(request, 'crud_seguimientos.html', {'seguimientos': seguimientos})
 
-def crud_consultas(request):
-    """Vista para listar consultas - CORREGIDA"""
-    # Cargar consultas sin los campos problemáticos de Sala
-    consultas = Consulta.objects.select_related('paciente', 'medico').all()
-    
-    return render(request, 'crud_consultas.html', {'consultas': consultas})
-
 # ========== CREAR ==========
 
 def crear_paciente(request):
-    """Vista para crear paciente - CORREGIDA"""
+    """Vista para crear paciente"""
     if request.method == 'POST':
         try:
             Paciente.objects.create(
@@ -102,7 +276,7 @@ def crear_paciente(request):
                 nombre=request.POST['nombre'],
                 apellido=request.POST['apellido'],
                 fecha_nacimiento=request.POST['fecha_nacimiento'],
-                genero=request.POST['genero'],  # Ahora acepta valores completos
+                genero=request.POST['genero'],
                 tipo_sangre=request.POST['tipo_sangre'],
                 telefono=request.POST.get('telefono', ''),
                 correo=request.POST.get('correo', ''),
@@ -200,9 +374,9 @@ def crear_especialidad(request):
     """Vista para crear especialidad"""
     if request.method == 'POST':
         try:
-            # CORREGIDO: Solo crear con nombre, sin descripcion
             Especialidad.objects.create(
-                nombre=request.POST['nombre']
+                nombre=request.POST['nombre'],
+                descripcion=request.POST.get('descripcion', '')
             )
             messages.success(request, '✅ Especialidad creada exitosamente!')
             return redirect('crud:crud_especialidades')
@@ -239,13 +413,50 @@ def crear_sala(request):
         'especialidades': especialidades
     })
 
+def editar_sala(request, id):
+    """Vista para editar sala"""
+    sala = get_object_or_404(Sala, id=id)
+    especialidades = Especialidad.objects.all()
+    
+    if request.method == 'POST':
+        try:
+            sala.nombre = request.POST['nombre']
+            sala.numero = request.POST['numero']
+            sala.piso = request.POST.get('piso', 1)
+            sala.capacidad = request.POST.get('capacidad', 5)
+            sala.tipo = request.POST.get('tipo', 'Consulta')
+            
+            # AGREGAR ESPECIALIDAD:
+            especialidad_id = request.POST.get('especialidad')
+            if especialidad_id:
+                sala.especialidad_id = especialidad_id
+            else:
+                sala.especialidad = None
+            
+            # AGREGAR LOS NUEVOS CAMPOS:
+            sala.equipamiento = request.POST.get('equipamiento', '')
+            sala.disponible = request.POST.get('disponible') == 'on'
+            sala.estado = request.POST.get('estado', 'Disponible')
+            sala.descripcion = request.POST.get('descripcion', '')
+            
+            sala.save()
+            
+            messages.success(request, '✅ Sala actualizada exitosamente!')
+            return redirect('crud:crud_salas')
+        except Exception as e:
+            messages.error(request, f'❌ Error al actualizar sala: {str(e)}')
+    
+    return render(request, 'editar_sala.html', {
+        'sala': sala,
+        'especialidades': especialidades
+    })
+
 def crear_consulta(request):
-    """Vista para crear consulta - CORREGIDA"""
+    from .models import Paciente, Medico, Sala
+    
     pacientes = Paciente.objects.all()
     medicos = Medico.objects.all()
-    
-    # Cargar solo los campos básicos de Sala para evitar errores
-    salas = Sala.objects.only('id', 'nombre', 'piso', 'numero', 'capacidad').all()
+    salas = Sala.objects.all()
     
     if request.method == 'POST':
         try:
@@ -268,11 +479,11 @@ def crear_consulta(request):
             )
             consulta.save()
             
-            messages.success(request, '✅ Consulta creada exitosamente!')
-            return redirect('crud:crud_consultas')
+            messages.success(request, 'Consulta creada exitosamente.')
+            return redirect('crud_consultas')
             
         except Exception as e:
-            messages.error(request, f'❌ Error al crear consulta: {str(e)}')
+            messages.error(request, f'Error al crear consulta: {str(e)}')
     
     return render(request, 'crear_consulta.html', {
         'pacientes': pacientes,
@@ -311,7 +522,7 @@ def crear_seguimiento(request):
 # ========== EDITAR ==========
 
 def editar_paciente(request, id):
-    """Vista para editar paciente - CORREGIDA"""
+    """Vista para editar paciente"""
     paciente = get_object_or_404(Paciente, id=id)
     
     if request.method == 'POST':
@@ -320,7 +531,7 @@ def editar_paciente(request, id):
             paciente.nombre = request.POST['nombre']
             paciente.apellido = request.POST['apellido']
             paciente.fecha_nacimiento = request.POST['fecha_nacimiento']
-            paciente.genero = request.POST['genero']  # Ahora acepta valores completos
+            paciente.genero = request.POST['genero']
             paciente.tipo_sangre = request.POST['tipo_sangre']
             paciente.telefono = request.POST.get('telefono', '')
             paciente.correo = request.POST.get('correo', '')
@@ -389,8 +600,8 @@ def editar_especialidad(request, id):
     
     if request.method == 'POST':
         try:
-            # CORREGIDO: Solo actualizar nombre, sin descripcion
             especialidad.nombre = request.POST['nombre']
+            especialidad.descripcion = request.POST.get('descripcion', '')
             especialidad.save()
             
             messages.success(request, '✅ Especialidad actualizada exitosamente!')
@@ -403,7 +614,7 @@ def editar_especialidad(request, id):
 def editar_sala(request, id):
     """Vista para editar sala"""
     sala = get_object_or_404(Sala, id=id)
-    especialidades = Especialidad.objects.all()
+    especialidades = Especialidad.objects.all()  # ← AGREGAR ESTA LÍNEA
     
     if request.method == 'POST':
         try:
@@ -411,8 +622,7 @@ def editar_sala(request, id):
             sala.numero = request.POST['numero']
             sala.piso = request.POST.get('piso', 1)
             sala.capacidad = request.POST.get('capacidad', 5)
-            sala.tipo = request.POST.get('tipo', 'Consulta')
-            
+            sala.tipo = request.POST.get('tipo', 'Consulta')  # ← AGREGAR TIPO
             # AGREGAR ESPECIALIDAD:
             especialidad_id = request.POST.get('especialidad')
             if especialidad_id:
@@ -420,7 +630,7 @@ def editar_sala(request, id):
             else:
                 sala.especialidad = None
             
-            # AGREGAR LOS NUEVOS CAMPOS:
+            # AGREGAR LOS NUEVOS CAMPOS QUE TIENE TU FORMULARIO:
             sala.equipamiento = request.POST.get('equipamiento', '')
             sala.disponible = request.POST.get('disponible') == 'on'
             sala.estado = request.POST.get('estado', 'Disponible')
@@ -435,23 +645,21 @@ def editar_sala(request, id):
     
     return render(request, 'editar_sala.html', {
         'sala': sala,
-        'especialidades': especialidades
+        'especialidades': especialidades  # ← AGREGAR ESTO
     })
 
 def editar_consulta(request, id):
-    """Vista para editar consulta - CORREGIDA"""
+    """Vista para editar consulta"""
     consulta = get_object_or_404(Consulta, id=id)
     pacientes = Paciente.objects.all()
     medicos = Medico.objects.all()
-    
-    # Cargar solo los campos básicos de Sala para evitar errores
-    salas = Sala.objects.only('id', 'nombre', 'piso', 'numero', 'capacidad').all()
+    salas = Sala.objects.all()
     
     if request.method == 'POST':
         try:
             consulta.paciente_id = request.POST['paciente']
             consulta.medico_id = request.POST['medico']
-            consulta.sala_id = request.POST.get('sala')
+            consulta.sala_id = request.POST['sala']
             consulta.fecha = request.POST['fecha']
             consulta.motivo = request.POST['motivo']
             consulta.diagnostico = request.POST.get('diagnostico', '')
@@ -468,6 +676,33 @@ def editar_consulta(request, id):
         'pacientes': pacientes,
         'medicos': medicos,
         'salas': salas
+    })
+
+def editar_receta(request, id):
+    """Vista para editar receta"""
+    receta = get_object_or_404(Receta, id=id)
+    consultas = Consulta.objects.all()
+    medicamentos = Medicamento.objects.all()
+    
+    if request.method == 'POST':
+        try:
+            receta.consulta_id = request.POST['consulta']
+            receta.medicamento_id = request.POST['medicamento']
+            receta.dosis = request.POST['dosis']
+            receta.frecuencia = request.POST['frecuencia']
+            receta.duracion = request.POST['duracion']
+            receta.instrucciones = request.POST.get('instrucciones', '')
+            receta.save()
+            
+            messages.success(request, '✅ Receta actualizada exitosamente!')
+            return redirect('crud:crud_recetas')
+        except Exception as e:
+            messages.error(request, f'❌ Error al actualizar receta: {str(e)}')
+    
+    return render(request, 'editar_receta.html', {
+        'receta': receta,
+        'consultas': consultas,
+        'medicamentos': medicamentos
     })
 
 def editar_seguimiento(request, id):
@@ -572,6 +807,28 @@ def eliminar_consulta(request, id):
     
     return render(request, 'eliminar_consulta.html', {'consulta': consulta})
 
+def eliminar_tratamiento(request, id):
+    """Vista para eliminar tratamiento"""
+    tratamiento = get_object_or_404(Tratamiento, id=id)
+    
+    if request.method == 'POST':
+        tratamiento.delete()
+        messages.success(request, '✅ Tratamiento eliminado exitosamente!')
+        return redirect('crud:crud_tratamientos')
+    
+    return render(request, 'eliminar_tratamiento.html', {'tratamiento': tratamiento})
+
+def eliminar_receta(request, id):
+    """Vista para eliminar receta"""
+    receta = get_object_or_404(Receta, id=id)
+    
+    if request.method == 'POST':
+        receta.delete()
+        messages.success(request, '✅ Receta eliminada exitosamente!')
+        return redirect('crud:crud_recetas')
+    
+    return render(request, 'eliminar_receta.html', {'receta': receta})
+
 def eliminar_seguimiento(request, id):
     """Vista para eliminar seguimiento"""
     seguimiento = get_object_or_404(SeguimientoPaciente, id=id)
@@ -583,157 +840,100 @@ def eliminar_seguimiento(request, id):
     
     return render(request, 'eliminar_seguimiento.html', {'seguimiento': seguimiento})
 
-# Vistas para Recetas
-def crud_recetas(request):
-    recetas = Receta.objects.all().select_related('consulta__paciente', 'consulta__medico', 'medicamento')
-    return render(request, 'crud_recetas.html', {'recetas': recetas})
+# Vistas para Consultas
+def crud_consultas(request):
+    from .models import Consulta
+    consultas = Consulta.objects.all().select_related('paciente', 'medico', 'sala')
+    return render(request, 'crud_consultas.html', {'consultas': consultas})
 
-def crear_receta(request):
-    consultas = Consulta.objects.all().select_related('paciente', 'medico')
-    medicamentos = Medicamento.objects.all()
+def crear_consulta(request):
+    from .models import Paciente, Medico, Sala, Consulta
+    from django.contrib import messages
+    
+    pacientes = Paciente.objects.all()
+    medicos = Medico.objects.all()
+    salas = Sala.objects.all()
     
     if request.method == 'POST':
         try:
-            consulta_id = request.POST.get('consulta')
-            medicamento_id = request.POST.get('medicamento')
-            dosis = request.POST.get('dosis')
-            frecuencia = request.POST.get('frecuencia')
-            duracion = request.POST.get('duracion')
-            instrucciones = request.POST.get('instrucciones')
+            paciente_id = request.POST.get('paciente')
+            medico_id = request.POST.get('medico')
+            sala_id = request.POST.get('sala')
+            fecha = request.POST.get('fecha')
+            motivo = request.POST.get('motivo')
+            diagnostico = request.POST.get('diagnostico')
+            estado = request.POST.get('estado')
             
-            receta = Receta(
-                consulta_id=consulta_id,
-                medicamento_id=medicamento_id,
-                dosis=dosis,
-                frecuencia=frecuencia,
-                duracion=duracion,
-                instrucciones=instrucciones
+            consulta = Consulta(
+                paciente_id=paciente_id,
+                medico_id=medico_id,
+                sala_id=sala_id if sala_id else None,
+                fecha=fecha,
+                motivo=motivo,
+                diagnostico=diagnostico,
+                estado=estado
             )
-            receta.save()
+            consulta.save()
             
-            messages.success(request, '✅ Receta creada exitosamente!')
-            return redirect('crud:crud_recetas')
+            messages.success(request, 'Consulta creada exitosamente.')
+            return redirect('crud_consultas')
             
         except Exception as e:
-            messages.error(request, f'❌ Error al crear receta: {str(e)}')
+            messages.error(request, f'Error al crear consulta: {str(e)}')
     
-    return render(request, 'crear_receta.html', {
-        'consultas': consultas,
-        'medicamentos': medicamentos
+    return render(request, 'crear_consulta.html', {
+        'pacientes': pacientes,
+        'medicos': medicos,
+        'salas': salas
     })
 
-def editar_receta(request, id):
+def editar_consulta(request, id):
+    from .models import Consulta, Paciente, Medico, Sala
+    from django.contrib import messages
+    
     try:
-        receta = Receta.objects.get(id=id)
-        consultas = Consulta.objects.all().select_related('paciente', 'medico')
-        medicamentos = Medicamento.objects.all()
+        consulta = Consulta.objects.get(id=id)
+        pacientes = Paciente.objects.all()
+        medicos = Medico.objects.all()
+        salas = Sala.objects.all()
         
         if request.method == 'POST':
-            receta.consulta_id = request.POST.get('consulta')
-            receta.medicamento_id = request.POST.get('medicamento')
-            receta.dosis = request.POST.get('dosis')
-            receta.frecuencia = request.POST.get('frecuencia')
-            receta.duracion = request.POST.get('duracion')
-            receta.instrucciones = request.POST.get('instrucciones')
-            receta.save()
+            consulta.paciente_id = request.POST.get('paciente')
+            consulta.medico_id = request.POST.get('medico')
+            consulta.sala_id = request.POST.get('sala')
+            consulta.fecha = request.POST.get('fecha')
+            consulta.motivo = request.POST.get('motivo')
+            consulta.diagnostico = request.POST.get('diagnostico')
+            consulta.estado = request.POST.get('estado')
+            consulta.save()
             
-            messages.success(request, '✅ Receta actualizada exitosamente!')
-            return redirect('crud:crud_recetas')
+            messages.success(request, 'Consulta actualizada exitosamente.')
+            return redirect('crud_consultas')
             
-        return render(request, 'editar_receta.html', {
-            'receta': receta,
-            'consultas': consultas,
-            'medicamentos': medicamentos
+        return render(request, 'editar_consulta.html', {
+            'consulta': consulta,
+            'pacientes': pacientes,
+            'medicos': medicos,
+            'salas': salas
         })
         
-    except Receta.DoesNotExist:
-        messages.error(request, '❌ La receta no existe.')
-        return redirect('crud:crud_recetas')
+    except Consulta.DoesNotExist:
+        messages.error(request, 'La consulta no existe.')
+        return redirect('crud_consultas')
 
-def eliminar_receta(request, id):
-    try:
-        receta = Receta.objects.get(id=id)
-        if request.method == 'POST':
-            receta.delete()
-            messages.success(request, '✅ Receta eliminada exitosamente!')
-            return redirect('crud:crud_recetas')
-            
-        return render(request, 'eliminar_receta.html', {'receta': receta})
-        
-    except Receta.DoesNotExist:
-        messages.error(request, '❌ La receta no existe.')
-        return redirect('crud:crud_recetas')
-
-# Vistas para Tratamientos
-def crud_tratamientos(request):
-    tratamientos = Tratamiento.objects.all().select_related('consulta__paciente', 'consulta__medico')
-    return render(request, 'crud_tratamientos.html', {'tratamientos': tratamientos})
-
-def crear_tratamiento(request):
-    consultas = Consulta.objects.all().select_related('paciente', 'medico')
+def eliminar_consulta(request, id):
+    from .models import Consulta
+    from django.contrib import messages
     
-    if request.method == 'POST':
-        try:
-            consulta_id = request.POST.get('consulta')
-            medicamento = request.POST.get('medicamento')
-            dosis = request.POST.get('dosis')
-            duracion = request.POST.get('duracion')
-            instrucciones = request.POST.get('instrucciones')
-            
-            tratamiento = Tratamiento(
-                consulta_id=consulta_id,
-                medicamento=medicamento,
-                dosis=dosis,
-                duracion=duracion,
-                instrucciones=instrucciones
-            )
-            tratamiento.save()
-            
-            messages.success(request, '✅ Tratamiento creado exitosamente!')
-            return redirect('crud:crud_tratamientos')
-            
-        except Exception as e:
-            messages.error(request, f'❌ Error al crear tratamiento: {str(e)}')
-    
-    return render(request, 'crear_tratamiento.html', {
-        'consultas': consultas
-    })
-
-def editar_tratamiento(request, id):
     try:
-        tratamiento = Tratamiento.objects.get(id=id)
-        consultas = Consulta.objects.all().select_related('paciente', 'medico')
-        
+        consulta = Consulta.objects.get(id=id)
         if request.method == 'POST':
-            tratamiento.consulta_id = request.POST.get('consulta')
-            tratamiento.medicamento = request.POST.get('medicamento')
-            tratamiento.dosis = request.POST.get('dosis')
-            tratamiento.duracion = request.POST.get('duracion')
-            tratamiento.instrucciones = request.POST.get('instrucciones')
-            tratamiento.save()
+            consulta.delete()
+            messages.success(request, 'Consulta eliminada exitosamente.')
+            return redirect('crud_consultas')
             
-            messages.success(request, '✅ Tratamiento actualizada exitosamente!')
-            return redirect('crud:crud_tratamientos')
-            
-        return render(request, 'editar_tratamiento.html', {
-            'tratamiento': tratamiento,
-            'consultas': consultas
-        })
+        return render(request, 'eliminar_consulta.html', {'consulta': consulta})
         
-    except Tratamiento.DoesNotExist:
-        messages.error(request, '❌ El tratamiento no existe.')
-        return redirect('crud:crud_tratamientos')
-
-def eliminar_tratamiento(request, id):
-    try:
-        tratamiento = Tratamiento.objects.get(id=id)
-        if request.method == 'POST':
-            tratamiento.delete()
-            messages.success(request, '✅ Tratamiento eliminado exitosamente!')
-            return redirect('crud:crud_tratamientos')
-            
-        return render(request, 'eliminar_tratamiento.html', {'tratamiento': tratamiento})
-        
-    except Tratamiento.DoesNotExist:
-        messages.error(request, '❌ El tratamiento no existe.')
-        return redirect('crud:crud_tratamientos')
+    except Consulta.DoesNotExist:
+        messages.error(request, 'La consulta no existe.')
+        return redirect('crud_consultas')

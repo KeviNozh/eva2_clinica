@@ -73,10 +73,8 @@ def crud_especialidades(request):
     return render(request, 'crud_especialidades.html', {'especialidades': especialidades})
 
 def crud_salas(request):
-    """Vista para listar salas - CORREGIDA"""
-    # Cargar solo los campos básicos para evitar errores
-    salas = Sala.objects.only('id', 'nombre', 'numero', 'piso', 'capacidad').all()
-    
+    """Vista para listar salas"""
+    salas = Sala.objects.all()
     return render(request, 'crud_salas.html', {'salas': salas})
 
 def crud_seguimientos(request):
@@ -94,7 +92,7 @@ def crud_consultas(request):
 # ========== CREAR ==========
 
 def crear_paciente(request):
-    """Vista para crear paciente - CORREGIDA"""
+    """Vista para crear paciente"""
     if request.method == 'POST':
         try:
             Paciente.objects.create(
@@ -102,7 +100,7 @@ def crear_paciente(request):
                 nombre=request.POST['nombre'],
                 apellido=request.POST['apellido'],
                 fecha_nacimiento=request.POST['fecha_nacimiento'],
-                genero=request.POST['genero'],  # Ahora acepta valores completos
+                genero=request.POST['genero'],
                 tipo_sangre=request.POST['tipo_sangre'],
                 telefono=request.POST.get('telefono', ''),
                 correo=request.POST.get('correo', ''),
@@ -311,7 +309,7 @@ def crear_seguimiento(request):
 # ========== EDITAR ==========
 
 def editar_paciente(request, id):
-    """Vista para editar paciente - CORREGIDA"""
+    """Vista para editar paciente"""
     paciente = get_object_or_404(Paciente, id=id)
     
     if request.method == 'POST':
@@ -320,7 +318,7 @@ def editar_paciente(request, id):
             paciente.nombre = request.POST['nombre']
             paciente.apellido = request.POST['apellido']
             paciente.fecha_nacimiento = request.POST['fecha_nacimiento']
-            paciente.genero = request.POST['genero']  # Ahora acepta valores completos
+            paciente.genero = request.POST['genero']
             paciente.tipo_sangre = request.POST['tipo_sangre']
             paciente.telefono = request.POST.get('telefono', '')
             paciente.correo = request.POST.get('correo', '')
