@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block title %}Editar Tratamiento - Salud Vital{% endblock %}
+{% block page_title %}🩺 Editar Tratamiento{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card-custom">
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Consulta *</label>
+                            <select class="form-select-custom" name="consulta" required>
+                                <option value="">Seleccione una consulta</option>
+                                {% for consulta in consultas %}
+                                <option value="{{ consulta.id }}" 
+                                        {% if tratamiento.consulta.id == consulta.id %}selected{% endif %}>
+                                    {{ consulta.paciente.nombre }} {{ consulta.paciente.apellido }} - 
+                                    Dr. {{ consulta.medico.user.first_name }} - 
+                                    {{ consulta.fecha|date:"d/m/Y" }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Medicamento</label>
+                            <input type="text" class="form-control-custom" name="medicamento" 
+                                   value="{{ tratamiento.medicamento|default:'' }}"
+                                   placeholder="Nombre del medicamento">
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Dosis</label>
+                                <input type="text" class="form-control-custom" name="dosis" 
+                                       value="{{ tratamiento.dosis|default:'' }}"
+                                       placeholder="Ej: 500mg cada 8 horas">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Duración</label>
+                                <input type="text" class="form-control-custom" name="duracion" 
+                                       value="{{ tratamiento.duracion|default:'' }}"
+                                       placeholder="Ej: 7 días">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Instrucciones</label>
+                            <textarea class="form-control-custom" name="instrucciones" 
+                                      rows="4" placeholder="Instrucciones adicionales para el tratamiento">{{ tratamiento.instrucciones|default:'' }}</textarea>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2 mt-4">
+                            <a href="{% url 'crud:crud_tratamientos' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-1"></i> Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-primary-custom">
+                                <i class="fas fa-save me-1"></i> Actualizar Tratamiento
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

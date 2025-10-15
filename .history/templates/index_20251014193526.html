@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Inicio - Salud Vital</title>
+
+  <!-- Evita flash de tema: aplica preferencia guardada antes de cargar estilos -->
+  <script>
+    (function(){
+      try {
+        const KEY = 'salud_vital_theme';
+        const saved = localStorage.getItem(KEY);
+        if (saved === 'dark') document.documentElement.setAttribute('data-theme','dark');
+        else if (saved === 'light') document.documentElement.removeAttribute('data-theme');
+        else {
+          // usar preferencia del sistema si no hay guardado
+          const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          if (prefersDark) document.documentElement.setAttribute('data-theme','dark');
+        }
+      } catch(e){
+        // si localStorage no está disponible, no hacemos nada
+      }
+    })();
+  </script>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#f8fafc;
+      --panel:#ffffff;
+      --muted:#6b7280;
+      --text:#0b2133;
+      --glass: rgba(11,21,40,0.04);
+      --c1-start:#7c3aed; --c1-end:#06b6d4;
+      --c2-start:#ff7a59; --c2-end:#ffb86b;
+      --radius:14px;
+      --shadow-lg: 0 18px 60px rgba(2,6,23,0.06);
+      --max-width:1200px;
+      color-scheme: light;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    /* SOLO VARIABLES de color cambian en modo oscuro */
+    html[data-theme="dark"]{
+      --bg:#0f172a;
+      --panel: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      --muted:#9aa4b2;
+      --text:#e6eef6;
+      --glass: rgba(255,255,255,0.04);
+      --shadow-lg: 0 18px 60px rgba(2,6,23,0.5);
+      color-scheme: dark;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;background:var(--bg);-webkit-font-smoothing:antialiased;color:var(--text)}
+    a{color:inherit;text-decoration:none}
+    .wrap{max-width:var(--max-width);margin:30px auto;padding:20px}
+
+    header.site{
+      display:flex;align-items:center;gap:16px;padding:18px;border-radius:12px;
+      background: linear-gradient(90deg, rgba(0,0,0,0.02), rgba(0,0,0,0.01));
+      border: 1px solid var(--glass);
+      box-shadow: var(--shadow-lg);
+    }
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{
+      width:64px;height:64px;border-radius:12px;background:linear-gradient(135deg,var(--c1-start),var(--c1-end));
+      display:grid;place-items:center;font-weight:900;font-size:18px;color:var(--panel);
+      box-shadow:0 12px 40px rgba(124,58,237,0.12)
+    }
+    .brand .title{font-weight:800;font-size:18px}
+    .brand .subtitle{font-size:13px;color:var(--muted);margin-top:4px}
+
+    nav.main{margin-left:auto;display:flex;gap:10px;align-items:center}
+    .nav-link{padding:8px 12px;border-radius:10px;color:var(--text);opacity:0.95;font-weight:700}
+    .nav-link.cta{background:linear-gradient(90deg,var(--c1-start),var(--c1-end));box-shadow:0 12px 30px rgba(124,58,237,0.08);color:white}
+
+    /* El botón mantiene su contenido (icono) sin alterarlo — sólo cambia colores */
+    .theme-toggle{
+      display:inline-grid;place-items:center;width:44px;height:44px;border-radius:10px;border:1px solid var(--glass);
+      background:linear-gradient(180deg,#fff,#fbfdff);cursor:pointer;
+    }
+    html[data-theme="dark"] .theme-toggle{
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.04);
+    }
+    .theme-toggle svg{display:block}
+
+    .hero{display:grid;grid-template-columns:1fr 340px;gap:22px;margin-top:22px;align-items:start}
+    @media (max-width:980px){ .hero{grid-template-columns:1fr} }
+    .hero-card{background:var(--panel);border-radius:var(--radius);padding:28px;box-shadow:var(--shadow-lg);overflow:hidden}
+    .hero h1{margin:0;font-size:32px}
+    .hero p{margin:12px 0;color:var(--muted);font-size:15px}
+    .cta-group{display:flex;gap:12px;margin-top:18px;flex-wrap:wrap}
+    .btn{padding:12px 18px;border-radius:12px;border:0;font-weight:800;cursor:pointer;color:var(--panel)}
+    .btn.primary{background:linear-gradient(90deg,var(--c1-start),var(--c1-end))}
+    .btn.alt{background:linear-gradient(90deg,#34d399,#60a5fa)}
+
+    .services{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:26px}
+    @media (max-width:1100px){ .services{grid-template-columns:repeat(2,1fr)} }
+    @media (max-width:700px){ .services{grid-template-columns:1fr} }
+    .service{background:var(--panel);padding:16px;border-radius:12px;border:1px solid var(--glass);display:flex;gap:12px;align-items:flex-start}
+    .service .icon{width:56px;height:56px;border-radius:12px;display:grid;place-items:center;font-weight:900;color:var(--panel)}
+    .service .title{font-weight:800}
+    .service .desc{color:var(--muted);margin-top:6px;font-size:14px}
+
+    footer.site{margin-top:28px;padding:18px;border-radius:12px;background:var(--panel);border:1px solid var(--glass);display:flex;justify-content:space-between;align-items:center;gap:12px}
+    .footer-left{font-weight:800}
+    .footer-right{color:var(--muted)}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="site" role="banner" aria-label="Encabezado principal">
+      <div class="brand">
+        <div class="logo" aria-hidden>SV</div>
+        <div>
+          <div class="title">Salud Vital</div>
+          <div class="subtitle">Clínica Integral — Atención humana</div>
+        </div>
+      </div>
+
+      <nav class="main" role="navigation" aria-label="Navegación principal">
+        <a class="nav-link" href="#home">Inicio</a>
+        <a class="nav-link" href="#servicios">Servicios</a>
+        <a class="nav-link" href="#medicos">Especialistas</a>
+        <a class="nav-link" href="#api">API</a>
+
+        <!-- Mantiene el icono tal cual; el script NO lo modifica -->
+        <button class="theme-toggle" aria-pressed="false" title="Cambiar tema" data-theme-toggle>
+          <span class="sr-only">Alternar tema claro/oscuro</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
+            <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" fill="#0b1530" opacity="0.95"/>
+            <path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="#6b7280" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+        <a class="nav-link cta" href="/admin/">Administración</a>
+      </nav>
+    </header>
+
+    <section class="hero" id="home" aria-labelledby="hero-title">
+      <div class="hero-card">
+        <h1 id="hero-title">Cuidado médico con enfoque humano y tecnología</h1>
+        <p>Atendemos a tu familia con especialistas certificados, historia clínica electrónica segura y atención integral.</p>
+
+        <div class="cta-group">
+          <a class="btn primary" href="/api/docs/" role="button">Documentación API</a>
+          <a class="btn alt" href="/api/" role="button">Explorar API</a>
+        </div>
+
+        <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">
+          <span style="display:inline-block;padding:8px 12px;border-radius:999px;background:rgba(0,0,0,0.04);font-weight:700">PostgreSQL</span>
+          <span style="display:inline-block;padding:8px 12px;border-radius:999px;background:rgba(0,0,0,0.04);font-weight:700">Django REST</span>
+          <span style="display:inline-block;padding:8px 12px;border-radius:999px;background:rgba(0,0,0,0.04);font-weight:700">Swagger</span>
+        </div>
+      </div>
+
+      <aside class="hero-card" style="padding:18px;border-radius:16px" aria-labelledby="ap-title">
+        <h3 id="ap-title">Acceso Rápido</h3>
+        <div style="text-align:center;margin:18px 0;">
+          <a class="btn primary" href="/admin/" style="display:block;margin-bottom:10px">Panel Administración</a>
+          <a class="btn alt" href="/api/docs/" style="display:block">Documentación API</a>
+        </div>
+        <div style="color:var(--muted);font-size:14px;text-align:center">Usuario: admin • Contraseña: backend123</div>
+      </aside>
+    </section>
+
+    <section id="servicios" class="services" aria-label="Servicios destacados">
+      <article class="service">
+        <div class="icon" style="background:linear-gradient(135deg,var(--c1-start),var(--c1-end))">🏥</div>
+        <div>
+          <div class="title">Consultas y control</div>
+          <div class="desc">Atención primaria, controles preventivos y manejo de enfermedades crónicas.</div>
+        </div>
+      </article>
+
+      <article class="service">
+        <div class="icon" style="background:linear-gradient(135deg,#ff7a59,#ffb86b)">🔬</div>
+        <div>
+          <div class="title">Diagnóstico y laboratorio</div>
+          <div class="desc">Imágenes, laboratorio clínico y exámenes especializados con entrega rápida.</div>
+        </div>
+      </article>
+
+      <article class="service">
+        <div class="icon" style="background:linear-gradient(135deg,#34d399,#60a5fa)">💊</div>
+        <div>
+          <div class="title">Tratamientos y rehabilitación</div>
+          <div class="desc">Planes personalizados, fisioterapia y seguimiento multidisciplinario.</div>
+        </div>
+      </article>
+    </section>
+
+    <footer class="site" role="contentinfo" aria-label="Pie de página">
+      <div class="footer-left">Clínica Salud Vital — Página: Inicio</div>
+      <div class="footer-right">
+        <div class="muted">Sección: Backend • <span id="current-year"></span></div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    (function(){
+      const KEY = 'salud_vital_theme';
+      const root = document.documentElement;
+      const btn = document.querySelector('[data-theme-toggle]');
+      const yearEl = document.getElementById('current-year');
+      if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+      // Esta función SOLO cambia la variable/atributo data-theme (colores).
+      function applyTheme(theme){
+        if (theme === 'dark') {
+          root.setAttribute('data-theme','dark');
+          if (btn) btn.setAttribute('aria-pressed','true');
+        } else {
+          root.removeAttribute('data-theme');
+          if (btn) btn.setAttribute('aria-pressed','false');
+        }
+      }
+
+      // Inicializa: preferencia guardada > preferencia del sistema > claro por defecto
+      try {
+        const saved = localStorage.getItem(KEY);
+        if (saved === 'dark' || saved === 'light') applyTheme(saved);
+        else {
+          const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          applyTheme(prefersDark ? 'dark' : 'light');
+        }
+      } catch(e) {
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        applyTheme(prefersDark ? 'dark' : 'light');
+      }
+
+      if (btn) {
+        btn.addEventListener('click', function(){
+          const isDark = root.getAttribute('data-theme') === 'dark';
+          const next = isDark ? 'light' : 'dark';
+          applyTheme(next);
+          try { localStorage.setItem(KEY, next); } catch(e) { /* ignore */ }
+        });
+
+        // soporte teclado sin cambiar el contenido del botón
+        btn.addEventListener('keydown', function(e){
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            btn.click();
+          }
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

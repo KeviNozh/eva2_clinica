@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block title %}Editar Medicamento - Salud Vital{% endblock %}
+{% block page_title %}💊 Editar Medicamento{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card-custom">
+                <div class="card-header" style="background: var(--accent-1); color: white; border-radius: var(--radius) var(--radius) 0 0;">
+                    <h5 class="mb-0"><i class="fas fa-pills me-2"></i>Editar Información del Medicamento</h5>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <!-- Información Básica -->
+                        <div class="mb-4">
+                            <h6 class="section-title mb-3" style="color: var(--text); border-bottom: 2px solid var(--accent-1); padding-bottom: 8px;">
+                                <i class="fas fa-info-circle me-2"></i>Información Básica
+                            </h6>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Nombre del Medicamento *</label>
+                                    <input type="text" class="form-control-custom" name="nombre" value="{{ medicamento.nombre }}" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Laboratorio</label>
+                                    <input type="text" class="form-control-custom" name="laboratorio" value="{{ medicamento.laboratorio|default:'' }}">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Inventario y Precio -->
+                        <div class="mb-4">
+                            <h6 class="section-title mb-3" style="color: var(--text); border-bottom: 2px solid var(--accent-1); padding-bottom: 8px;">
+                                <i class="fas fa-boxes me-2"></i>Inventario y Precio
+                            </h6>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold">Stock Disponible</label>
+                                    <input type="number" class="form-control-custom" name="stock" value="{{ medicamento.stock }}" min="0">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold">Precio Unitario</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text" style="background: var(--glass); border: 1px solid var(--glass); color: var(--text);">$</span>
+                                        <input type="number" class="form-control-custom" name="precio_unitario" value="{{ medicamento.precio_unitario }}" step="0.01" min="0">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold">Tipo de Medicamento</label>
+                                    <select class="form-select-custom" name="tipo">
+                                        <option value="Tableta" {% if medicamento.tipo == 'Tableta' %}selected{% endif %}>Tableta</option>
+                                        <option value="Cápsula" {% if medicamento.tipo == 'Cápsula' %}selected{% endif %}>Cápsula</option>
+                                        <option value="Jarabe" {% if medicamento.tipo == 'Jarabe' %}selected{% endif %}>Jarabe</option>
+                                        <option value="Inyección" {% if medicamento.tipo == 'Inyección' %}selected{% endif %}>Inyección</option>
+                                        <option value="Crema" {% if medicamento.tipo == 'Crema' %}selected{% endif %}>Crema</option>
+                                        <option value="Otro" {% if medicamento.tipo == 'Otro' %}selected{% endif %}>Otro</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Descripción -->
+                        <div class="mb-4">
+                            <h6 class="section-title mb-3" style="color: var(--text); border-bottom: 2px solid var(--accent-1); padding-bottom: 8px;">
+                                <i class="fas fa-file-alt me-2"></i>Descripción
+                            </h6>
+                            <div class="row">
+                                <div class="col-12">
+                                    <label class="form-label fw-semibold">Descripción del Medicamento</label>
+                                    <textarea class="form-control-custom" name="descripcion" rows="4" placeholder="Descripción detallada del medicamento...">{{ medicamento.descripcion|default:'' }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botones de Acción -->
+                        <div class="d-flex justify-content-end gap-3 mt-4 pt-3 border-top">
+                            <a href="{% url 'crud:crud_medicamentos' %}" class="btn btn-outline-secondary px-4">
+                                <i class="fas fa-arrow-left me-2"></i> Volver
+                            </a>
+                            <button type="submit" class="btn btn-primary-custom px-4">
+                                <i class="fas fa-save me-2"></i> Actualizar Medicamento
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.section-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.form-control-custom, .form-select-custom {
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 0.95rem;
+}
+
+.form-label {
+    font-weight: 500;
+    margin-bottom: 6px;
+    color: var(--text);
+}
+
+.card-header {
+    padding: 20px;
+}
+
+.input-group-text {
+    border-radius: 8px 0 0 8px;
+}
+</style>
+{% endblock %}

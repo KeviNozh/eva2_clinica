@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{% block title %}Gestión de Médicos - Salud Vital{% endblock %}
+{% block page_title %}👨‍⚕️ Gestión de Médicos{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <p class="text-muted mb-0">Administrar profesionales médicos del sistema</p>
+        </div>
+        <div>
+            <a href="{% url 'crud:crear_medico' %}" class="btn btn-primary-custom">
+                <i class="fas fa-plus me-1"></i> Nuevo Médico
+            </a>
+            <a href="/api/medicos/" class="btn btn-outline-secondary" target="_blank">
+                <i class="fas fa-code me-1"></i> Ver API
+            </a>
+        </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="card-custom mb-4">
+        <div class="card-body">
+            <h5 class="card-title mb-3"><i class="fas fa-filter me-2"></i>Filtros y Búsqueda</h5>
+            <form method="get" class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Buscar:</label>
+                    <input type="text" class="form-control-custom" name="q" value="{{ request.GET.q }}" 
+                           placeholder="Nombre, apellido o especialidad...">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Especialidad:</label>
+                    <select class="form-select-custom" name="especialidad">
+                        <option value="">Todas las especialidades</option>
+                        {% for especialidad in especialidades %}
+                        <option value="{{ especialidad.id }}" 
+                                {% if request.GET.especialidad == especialidad.id|stringformat:"i" %}selected{% endif %}>
+                            {{ especialidad.nombre }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary-custom me-2">
+                        <i class="fas fa-search me-1"></i> Buscar
+                    </button>
+                    <a href="{% url 'crud:crud_medicos' %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-undo me-1"></i> Limpiar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Tabla de médicos -->
+    <div class="card-custom">
+        <div class="card-body">
+            <h5 class="card-title mb-3"><i class="fas fa-list me-2"></i>Lista de Médicos</h5>
+            
+            {% if medicos %}
+            <div class="table-responsive">
+                <table class="table table-custom table-hover">
+                    <thead>
+                        <tr>
+                            <th>RUT/Usuario</th>
+                            <th>Nombre</th>
+                            <th>Especialidad</th>
+                            <th>Teléfono</th>
+                            <th>Correo</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for medico in medicos %}
+                        <tr>
+                            <td>{{ medico.user.username }}</td>
+                            <td>Dr. {{ medico.user.first_name }} {{ medico.user.last_name }}</td>
+                            <td>{{ medico.especialidad.nombre }}</td>
+                            <td>{{ medico.telefono|default:"-" }}</td>
+                            <td>{{ medico.user.email|default:"-" }}</td>
+                            <td>
+                                <div class="btn-group btn-group-sm">
+                                    <a href="{% url 'crud:editar_medico' medico.id %}" class="btn btn-outline-primary" title="Editar">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="{% url 'crud:eliminar_medico' medico.id %}" class="btn btn-outline-danger" title="Eliminar">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-user-md fa-3x text-muted mb-3"></i>
+                <h4 class="text-muted">No se encontraron médicos</h4>
+                <p class="text-muted">No hay médicos que coincidan con los criterios de búsqueda.</p>
+                <a href="{% url 'crud:crear_medico' %}" class="btn btn-primary-custom">
+                    <i class="fas fa-plus me-1"></i> Crear Primer Médico
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

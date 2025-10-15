@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Gestión de Pacientes - Salud Vital{% endblock %}
+{% block page_title %}👥 Gestión de Pacientes{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <p class="text-muted mb-0">Administrar registro de pacientes del sistema</p>
+        </div>
+        <div>
+            <a href="{% url 'crud:crear_paciente' %}" class="btn btn-primary-custom">
+                <i class="fas fa-plus me-1"></i> Nuevo Paciente
+            </a>
+            <a href="/api/pacientes/" class="btn btn-outline-secondary" target="_blank">
+                <i class="fas fa-code me-1"></i> Ver API
+            </a>
+        </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="card-custom mb-4">
+        <div class="card-body">
+            <h5 class="card-title mb-3"><i class="fas fa-filter me-2"></i>Filtros y Búsqueda</h5>
+            <form method="get" class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Buscar:</label>
+                    <input type="text" class="form-control-custom" name="q" value="{{ request.GET.q }}" 
+                           placeholder="Nombre, apellido o RUT...">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Género:</label>
+                    <select class="form-select-custom" name="genero">
+                        <option value="">Todos</option>
+                        <option value="Masculino" {% if request.GET.genero == 'Masculino' %}selected{% endif %}>Masculino</option>
+                        <option value="Femenino" {% if request.GET.genero == 'Femenino' %}selected{% endif %}>Femenino</option>
+                        <option value="Otro" {% if request.GET.genero == 'Otro' %}selected{% endif %}>Otro</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Tipo Sangre:</label>
+                    <select class="form-select-custom" name="tipo_sangre">
+                        <option value="">Todos</option>
+                        <option value="A+" {% if request.GET.tipo_sangre == 'A+' %}selected{% endif %}>A+</option>
+                        <option value="A-" {% if request.GET.tipo_sangre == 'A-' %}selected{% endif %}>A-</option>
+                        <option value="B+" {% if request.GET.tipo_sangre == 'B+' %}selected{% endif %}>B+</option>
+                        <option value="B-" {% if request.GET.tipo_sangre == 'B-' %}selected{% endif %}>B-</option>
+                        <option value="AB+" {% if request.GET.tipo_sangre == 'AB+' %}selected{% endif %}>AB+</option>
+                        <option value="AB-" {% if request.GET.tipo_sangre == 'AB-' %}selected{% endif %}>AB-</option>
+                        <option value="O+" {% if request.GET.tipo_sangre == 'O+' %}selected{% endif %}>O+</option>
+                        <option value="O-" {% if request.GET.tipo_sangre == 'O-' %}selected{% endif %}>O-</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Estado:</label>
+                    <select class="form-select-custom" name="activo">
+                        <option value="">Todos</option>
+                        <option value="true" {% if request.GET.activo == 'true' %}selected{% endif %}>Activo</option>
+                        <option value="false" {% if request.GET.activo == 'false' %}selected{% endif %}>Inactivo</option>
+                    </select>
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary-custom me-2">
+                        <i class="fas fa-search me-1"></i> Filtrar
+                    </button>
+                    <a href="{% url 'crud:crud_pacientes' %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-times me-1"></i> Limpiar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Tabla de Pacientes -->
+    <div class="card-custom">
+        <div class="card-body">
+            <h5 class="card-title mb-3"><i class="fas fa-list me-2"></i>Lista de Pacientes</h5>
+            
+            {% if pacientes %}
+            <div class="table-responsive">
+                <table class="table table-custom table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>RUT</th>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>Fecha Nacimiento</th>
+                            <th>Género</th>
+                            <th>Tipo Sangre</th>
+                            <th>Teléfono</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for paciente in pacientes %}
+                        <tr>
+                            <td>{{ paciente.id }}</td>
+                            <td>{{ paciente.rut }}</td>
+                            <td>{{ paciente.nombre }}</td>
+                            <td>{{ paciente.apellido }}</td>
+                            <td>{{ paciente.fecha_nacimiento|date:"d/m/Y" }}</td>
+                            <td>{{ paciente.genero }}</td>
+                            <td>{{ paciente.tipo_sangre }}</td>
+                            <td>{{ paciente.telefono|default:"-" }}</td>
+                            <td>
+                                {% if paciente.activo %}
+                                    <span class="badge bg-success">Activo</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Inactivo</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="btn-group btn-group-sm">
+                                    <a href="{% url 'crud:editar_paciente' paciente.id %}" class="btn btn-outline-primary" title="Editar">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="{% url 'crud:eliminar_paciente' paciente.id %}" class="btn btn-outline-danger" title="Eliminar">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-user-injured fa-3x text-muted mb-3"></i>
+                <h4 class="text-muted">No se encontraron pacientes</h4>
+                <p class="text-muted">No hay pacientes que coincidan con los criterios de búsqueda.</p>
+                <a href="{% url 'crud:crear_paciente' %}" class="btn btn-primary-custom">
+                    <i class="fas fa-plus me-1"></i> Crear Primer Paciente
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

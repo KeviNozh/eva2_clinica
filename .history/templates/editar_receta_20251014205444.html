@@ -1,0 +1,257 @@
+{% extends 'base.html' %}
+
+{% block title %}Editar Receta - Salud Vital{% endblock %}
+{% block page_title %}📝 Editar Receta{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-10 col-xl-8">
+            <div class="card-custom">
+                <div class="card-header" style="background: var(--accent-1); color: white; border-radius: var(--radius) var(--radius) 0 0; padding: 1.5rem;">
+                    <div class="d-flex align-items-center">
+                        <div class="icon-circle me-3" style="width: 50px; height: 50px; background: rgba(255,255,255,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-file-prescription fa-lg"></i>
+                        </div>
+                        <div>
+                            <h5 class="mb-1">Editar Receta Médica</h5>
+                            <p class="mb-0 opacity-75">Actualice los datos de la receta</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card-body p-4">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <!-- Información de la Consulta -->
+                        <div class="form-section mb-4">
+                            <div class="section-header mb-3">
+                                <i class="fas fa-stethoscope me-2"></i>
+                                <span class="section-title">Información de la Consulta</span>
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Consulta *</label>
+                                        <select class="form-select-custom" name="consulta" required>
+                                            <option value="">Seleccione una consulta</option>
+                                            {% for consulta in consultas %}
+                                            <option value="{{ consulta.id }}" 
+                                                    {% if receta.consulta.id == consulta.id %}selected{% endif %}>
+                                                {{ consulta.paciente.nombre }} {{ consulta.paciente.apellido }} - 
+                                                {{ consulta.fecha|date:"d/m/Y" }}
+                                            </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Médico</label>
+                                        <input type="text" class="form-control-custom" value="{{ receta.consulta.medico.user.first_name }} {{ receta.consulta.medico.user.last_name }}" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Medicamentos -->
+                        <div class="form-section mb-4">
+                            <div class="section-header mb-3">
+                                <i class="fas fa-pills me-2"></i>
+                                <span class="section-title">Medicamentos</span>
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Medicamento *</label>
+                                        <select class="form-select-custom" name="medicamento" required>
+                                            <option value="">Seleccione un medicamento</option>
+                                            {% for medicamento in medicamentos %}
+                                            <option value="{{ medicamento.id }}" 
+                                                    {% if receta.medicamento.id == medicamento.id %}selected{% endif %}>
+                                                {{ medicamento.nombre }} - {{ medicamento.laboratorio }}
+                                            </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Cantidad *</label>
+                                        <input type="number" class="form-control-custom" name="cantidad" value="{{ receta.cantidad }}" min="1" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Instrucciones de Uso -->
+                        <div class="form-section mb-4">
+                            <div class="section-header mb-3">
+                                <i class="fas fa-list-alt me-2"></i>
+                                <span class="section-title">Instrucciones de Uso</span>
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Dosis *</label>
+                                        <input type="text" class="form-control-custom" name="dosis" value="{{ receta.dosis }}" required placeholder="Ej: 500mg">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Frecuencia *</label>
+                                        <input type="text" class="form-control-custom" name="frecuencia" value="{{ receta.frecuencia }}" required placeholder="Ej: Cada 8 horas">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Duración *</label>
+                                        <input type="text" class="form-control-custom" name="duracion" value="{{ receta.duracion }}" required placeholder="Ej: 7 días">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Instrucciones Adicionales -->
+                        <div class="form-section mb-4">
+                            <div class="section-header mb-3">
+                                <i class="fas fa-file-medical me-2"></i>
+                                <span class="section-title">Instrucciones Adicionales</span>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Instrucciones Especiales</label>
+                                        <textarea class="form-control-custom" name="instrucciones" rows="4" placeholder="Instrucciones adicionales para el paciente...">{{ receta.instrucciones|default:'' }}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Estado de la Receta -->
+                        <div class="form-section mb-4">
+                            <div class="section-header mb-3">
+                                <i class="fas fa-toggle-on me-2"></i>
+                                <span class="section-title">Estado de la Receta</span>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Estado *</label>
+                                        <select class="form-select-custom" name="estado" required>
+                                            <option value="Activa" {% if receta.estado == 'Activa' %}selected{% endif %}>Activa</option>
+                                            <option value="Completada" {% if receta.estado == 'Completada' %}selected{% endif %}>Completada</option>
+                                            <option value="Cancelada" {% if receta.estado == 'Cancelada' %}selected{% endif %}>Cancelada</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botones de Acción -->
+                        <div class="form-actions mt-5 pt-4 border-top">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <a href="/crud/recetas/" class="btn btn-outline-secondary px-4 py-2">
+                                    <i class="fas fa-arrow-left me-2"></i> Volver al Listado
+                                </a>
+                                <div class="d-flex gap-3">
+                                    <a href="/crud/recetas/eliminar/{{ receta.id }}/" class="btn btn-outline-danger px-4 py-2">
+                                        <i class="fas fa-trash me-2"></i> Eliminar
+                                    </a>
+                                    <button type="submit" class="btn btn-primary-custom px-4 py-2">
+                                        <i class="fas fa-save me-2"></i> Guardar Cambios
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.form-section {
+    padding: 1.5rem;
+    background: var(--card);
+    border-radius: var(--radius);
+    border: 1px solid var(--glass);
+    margin-bottom: 1.5rem;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--accent-1);
+}
+
+.section-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--text);
+}
+
+.form-group {
+    margin-bottom: 0;
+}
+
+.form-label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: var(--text);
+    font-size: 0.9rem;
+}
+
+.form-control-custom, .form-select-custom {
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    border: 1px solid var(--glass);
+    background: var(--bg);
+    color: var(--text);
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.form-control-custom:focus, .form-select-custom:focus {
+    border-color: #7c3aed;
+    box-shadow: 0 0 0 0.2rem rgba(124, 58, 237, 0.15);
+    background: var(--card);
+}
+
+.form-actions {
+    background: var(--card);
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--glass);
+}
+
+.card-header {
+    border: none;
+}
+
+.btn {
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-primary-custom {
+    background: var(--accent-1);
+    border: none;
+    color: white;
+}
+
+.btn-primary-custom:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+}
+
+.icon-circle {
+    backdrop-filter: blur(10px);
+}
+</style>
+{% endblock %}

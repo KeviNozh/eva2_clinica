@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}Eliminar Tratamiento - Salud Vital{% endblock %}
+{% block page_title %}🩺 Eliminar Tratamiento{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card-custom">
+                <div class="card-body text-center">
+                    <div class="mb-4">
+                        <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                        <h4 class="text-warning">Confirmar Eliminación</h4>
+                    </div>
+                    
+                    <p class="alert alert-warning">
+                        <strong>¿Estás seguro de que deseas eliminar este tratamiento?</strong>
+                        <br>Esta acción no se puede deshacer.
+                    </p>
+                    
+                    <div class="card-custom mb-4">
+                        <div class="card-body text-start">
+                            <h5>Tratamiento #{{ tratamiento.id }}</h5>
+                            <p class="mb-1"><strong>Paciente:</strong> {{ tratamiento.consulta.paciente.nombre }} {{ tratamiento.consulta.paciente.apellido }}</p>
+                            <p class="mb-1"><strong>Médico:</strong> Dr. {{ tratamiento.consulta.medico.user.first_name }}</p>
+                            <p class="mb-1"><strong>Medicamento:</strong> {{ tratamiento.medicamento|default:"-" }}</p>
+                            <p class="mb-0"><strong>Dosis:</strong> {{ tratamiento.dosis|default:"-" }}</p>
+                        </div>
+                    </div>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="d-flex justify-content-center gap-2">
+                            <a href="{% url 'crud:crud_tratamientos' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-1"></i> Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash me-1"></i> Sí, Eliminar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

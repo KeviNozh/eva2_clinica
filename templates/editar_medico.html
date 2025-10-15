@@ -1,0 +1,238 @@
+{% extends 'base.html' %}
+
+{% block title %}Editar Médico - Salud Vital{% endblock %}
+{% block page_title %}👨‍⚕️ Editar Médico{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-10 col-xl-8">
+            <div class="card-custom">
+                <div class="card-header" style="background: var(--accent-1); color: white; border-radius: var(--radius) var(--radius) 0 0; padding: 1.5rem;">
+                    <div class="d-flex align-items-center">
+                        <div class="icon-circle me-3" style="width: 50px; height: 50px; background: rgba(255,255,255,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-user-md fa-lg"></i>
+                        </div>
+                        <div>
+                            <h5 class="mb-1">Editar Información del Médico</h5>
+                            <p class="mb-0 opacity-75">Actualice los datos del Dr. {{ medico.user.first_name }} {{ medico.user.last_name }}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card-body p-4">
+                    <!-- Alerta de especialidades -->
+                    {% if not especialidades %}
+                    <div class="alert alert-warning mb-4">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Advertencia:</strong> No hay especialidades disponibles. 
+                        <a href="{% url 'crud:crear_especialidad' %}" class="alert-link fw-semibold">
+                            Crear una especialidad primero
+                        </a>
+                    </div>
+                    {% endif %}
+
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <!-- Información Básica -->
+                        <div class="form-section mb-4">
+                            <div class="section-header mb-3">
+                                <i class="fas fa-user me-2"></i>
+                                <span class="section-title">Información Básica</span>
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">RUT *</label>
+                                        <input type="text" class="form-control-custom" name="rut" value="{{ medico.user.username }}" readonly>
+                                        <small class="text-muted">El RUT no se puede modificar</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Nombre *</label>
+                                        <input type="text" class="form-control-custom" name="nombre" value="{{ medico.user.first_name }}" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Apellido *</label>
+                                        <input type="text" class="form-control-custom" name="apellido" value="{{ medico.user.last_name }}" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Especialidad Médica -->
+                        <div class="form-section mb-4">
+                            <div class="section-header mb-3">
+                                <i class="fas fa-stethoscope me-2"></i>
+                                <span class="section-title">Especialidad Médica</span>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Especialidad *</label>
+                                        <select class="form-select-custom" name="especialidad" required {% if not especialidades %}disabled{% endif %}>
+                                            <option value="">Seleccionar especialidad</option>
+                                            {% if especialidades %}
+                                                {% for especialidad in especialidades %}
+                                                <option value="{{ especialidad.id }}" 
+                                                        {% if medico.especialidad.id == especialidad.id %}selected{% endif %}>
+                                                    {{ especialidad.nombre }}
+                                                </option>
+                                                {% endfor %}
+                                            {% else %}
+                                                <option value="" disabled>No hay especialidades disponibles</option>
+                                            {% endif %}
+                                        </select>
+                                        {% if not especialidades %}
+                                        <small class="text-danger">Debe crear especialidades primero</small>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Información de Contacto -->
+                        <div class="form-section mb-4">
+                            <div class="section-header mb-3">
+                                <i class="fas fa-phone me-2"></i>
+                                <span class="section-title">Información de Contacto</span>
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Teléfono</label>
+                                        <input type="tel" class="form-control-custom" name="telefono" 
+                                               value="{{ medico.telefono|default:'' }}"
+                                               placeholder="+56 9 1234 5678">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Correo Electrónico</label>
+                                        <input type="email" class="form-control-custom" name="correo" 
+                                               value="{{ medico.user.email|default:'' }}"
+                                               placeholder="doctor@clinica.cl">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Información Adicional -->
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Los cambios en el nombre y apellido se reflejarán en el usuario del sistema.
+                        </div>
+
+                        <!-- Botones de Acción -->
+                        <div class="form-actions mt-5 pt-4 border-top">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <a href="{% url 'crud:crud_medicos' %}" class="btn btn-outline-secondary px-4 py-2">
+                                    <i class="fas fa-arrow-left me-2"></i> Volver al Listado
+                                </a>
+                                <div class="d-flex gap-3">
+                                    <a href="{% url 'crud:eliminar_medico' medico.id %}" class="btn btn-outline-danger px-4 py-2">
+                                        <i class="fas fa-trash me-2"></i> Eliminar
+                                    </a>
+                                    <button type="submit" class="btn btn-primary-custom px-4 py-2" {% if not especialidades %}disabled{% endif %}>
+                                        <i class="fas fa-save me-2"></i> Actualizar Médico
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Los mismos estilos del template anterior se aplican aquí */
+.form-section {
+    padding: 1.5rem;
+    background: var(--card);
+    border-radius: var(--radius);
+    border: 1px solid var(--glass);
+    margin-bottom: 1.5rem;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--accent-1);
+}
+
+.section-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--text);
+}
+
+.form-group {
+    margin-bottom: 0;
+}
+
+.form-label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: var(--text);
+    font-size: 0.9rem;
+}
+
+.form-control-custom, .form-select-custom {
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    border: 1px solid var(--glass);
+    background: var(--bg);
+    color: var(--text);
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.form-control-custom:focus, .form-select-custom:focus {
+    border-color: #7c3aed;
+    box-shadow: 0 0 0 0.2rem rgba(124, 58, 237, 0.15);
+    background: var(--card);
+}
+
+.form-actions {
+    background: var(--card);
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--glass);
+}
+
+.btn {
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-primary-custom {
+    background: var(--accent-1);
+    border: none;
+    color: white;
+}
+
+.btn-primary-custom:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+}
+
+.icon-circle {
+    backdrop-filter: blur(10px);
+}
+
+.alert {
+    border-radius: 8px;
+    border: none;
+    padding: 1rem 1.25rem;
+}
+</style>
+{% endblock %}

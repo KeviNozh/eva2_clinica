@@ -1,0 +1,255 @@
+{% extends 'base.html' %}
+
+{% block title %}Crear Sala - Salud Vital{% endblock %}
+{% block page_title %}🏥 Crear Nueva Sala{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-10 col-xl-8">
+            <div class="card-custom">
+                <div class="card-header" style="background: var(--accent-1); color: white; border-radius: var(--radius) var(--radius) 0 0; padding: 1.5rem;">
+                    <div class="d-flex align-items-center">
+                        <div class="icon-circle me-3" style="width: 50px; height: 50px; background: rgba(255,255,255,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-door-open fa-lg"></i>
+                        </div>
+                        <div>
+                            <h5 class="mb-1">Crear Nueva Sala</h5>
+                            <p class="mb-0 opacity-75">Complete la información para registrar una nueva sala</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card-body p-4">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <!-- Información Básica -->
+                        <div class="form-section mb-4">
+                            <div class="section-header mb-3">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <span class="section-title">Información Básica</span>
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Nombre de la Sala *</label>
+                                        <input type="text" class="form-control-custom" name="nombre" required placeholder="Ej: Sala de Emergencias, Consultorio 1">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Número/Piso *</label>
+                                        <input type="text" class="form-control-custom" name="piso" required placeholder="Ej: 1, 2, PB">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Especialidad y Tipo -->
+                        <div class="form-section mb-4">
+                            <div class="section-header mb-3">
+                                <i class="fas fa-stethoscope me-2"></i>
+                                <span class="section-title">Especialidad y Tipo</span>
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Tipo de Sala *</label>
+                                        <select class="form-select-custom" name="tipo" required>
+                                            <option value="Consulta">Consulta</option>
+                                            <option value="Emergencia">Emergencia</option>
+                                            <option value="Operaciones">Operaciones</option>
+                                            <option value="Recuperación">Recuperación</option>
+                                            <option value="Exámenes">Exámenes</option>
+                                            <option value="Hospitalización">Hospitalización</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Especialidad Asignada</label>
+                                        <select class="form-select-custom" name="especialidad">
+                                            <option value="">Sin especialidad específica</option>
+                                            {% for especialidad in especialidades %}
+                                            <option value="{{ especialidad.id }}">{{ especialidad.nombre }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Equipamiento y Capacidad -->
+                        <div class="form-section mb-4">
+                            <div class="section-header mb-3">
+                                <i class="fas fa-tools me-2"></i>
+                                <span class="section-title">Equipamiento y Capacidad</span>
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Capacidad Máxima</label>
+                                        <input type="number" class="form-control-custom" name="capacidad" value="5" min="1" placeholder="Ej: 5">
+                                        <small class="text-muted">Número máximo de pacientes</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        <label class="form-label">Equipamiento Disponible</label>
+                                        <input type="text" class="form-control-custom" name="equipamiento" placeholder="Ej: Camilla, Monitor, Oxígeno">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Estado de la Sala -->
+                        <div class="form-section mb-4">
+                            <div class="section-header mb-3">
+                                <i class="fas fa-toggle-on me-2"></i>
+                                <span class="section-title">Estado de la Sala</span>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="form-check form-switch ps-0 mb-3">
+                                        <div class="d-flex align-items-center">
+                                            <input class="form-check-input me-3" type="checkbox" name="disponible" id="disponible" checked style="transform: scale(1.3);">
+                                            <label class="form-check-label fw-semibold" for="disponible">
+                                                Sala Disponible
+                                            </label>
+                                        </div>
+                                        <small class="text-muted mt-1 d-block">Las salas no disponibles no podrán ser asignadas a consultas</small>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Estado Actual</label>
+                                        <select class="form-select-custom" name="estado">
+                                            <option value="Disponible">Disponible</option>
+                                            <option value="Ocupada">Ocupada</option>
+                                            <option value="Mantenimiento">En Mantenimiento</option>
+                                            <option value="Limpieza">En Limpieza</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Descripción Adicional -->
+                        <div class="form-section mb-4">
+                            <div class="section-header mb-3">
+                                <i class="fas fa-file-alt me-2"></i>
+                                <span class="section-title">Descripción Adicional</span>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Notas y Observaciones</label>
+                                        <textarea class="form-control-custom" name="descripcion" rows="4" placeholder="Información adicional sobre la sala, características especiales, etc."></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botones de Acción -->
+                        <div class="form-actions mt-5 pt-4 border-top">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <a href="/crud/salas/" class="btn btn-outline-secondary px-4 py-2">
+                                    <i class="fas fa-arrow-left me-2"></i> Volver al Listado
+                                </a>
+                                <button type="submit" class="btn btn-primary-custom px-4 py-2">
+                                    <i class="fas fa-save me-2"></i> Crear Sala
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- INCLUIR LOS MISMOS ESTILOS QUE EN editar_sala.html -->
+<style>
+.form-section {
+    padding: 1.5rem;
+    background: var(--card);
+    border-radius: var(--radius);
+    border: 1px solid var(--glass);
+    margin-bottom: 1.5rem;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--accent-1);
+}
+
+.section-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--text);
+}
+
+.form-group {
+    margin-bottom: 0;
+}
+
+.form-label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: var(--text);
+    font-size: 0.9rem;
+}
+
+.form-control-custom, .form-select-custom {
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    border: 1px solid var(--glass);
+    background: var(--bg);
+    color: var(--text);
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.form-control-custom:focus, .form-select-custom:focus {
+    border-color: #7c3aed;
+    box-shadow: 0 0 0 0.2rem rgba(124, 58, 237, 0.15);
+    background: var(--card);
+}
+
+.form-actions {
+    background: var(--card);
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--glass);
+}
+
+.card-header {
+    border: none;
+}
+
+.btn {
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-primary-custom {
+    background: var(--accent-1);
+    border: none;
+    color: white;
+}
+
+.btn-primary-custom:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+}
+
+.icon-circle {
+    backdrop-filter: blur(10px);
+}
+</style>
+{% endblock %}

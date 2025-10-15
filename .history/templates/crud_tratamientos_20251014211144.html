@@ -1,0 +1,69 @@
+<!-- Medicamentos -->
+<div class="form-section mb-4">
+    <div class="section-header mb-3">
+        <i class="fas fa-pills me-2"></i>
+        <span class="section-title">Medicamentos Recetados</span>
+    </div>
+    <div class="row g-3">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="form-label">Medicamento Principal</label>
+                <select class="form-select-custom" name="medicamento">
+                    <option value="">Seleccione un medicamento</option>
+                    {% if medicamentos %}
+                        {% for medicamento in medicamentos %}
+                        <option value="{{ medicamento.id }}" 
+                                {% if tratamiento.medicamento and tratamiento.medicamento.id == medicamento.id %}selected{% endif %}>
+                            {{ medicamento.nombre }} 
+                            {% if medicamento.concentracion %}- {{ medicamento.concentracion }}{% endif %}
+                            {% if medicamento.laboratorio %}({{ medicamento.laboratorio }}){% endif %}
+                        </option>
+                        {% endfor %}
+                    {% else %}
+                        <!-- Mensaje temporal mientras se soluciona -->
+                        <option value="" disabled>--- ERROR: No se cargaron medicamentos ---</option>
+                    {% endif %}
+                </select>
+                
+                <!-- Mensaje de ayuda -->
+                <div class="mt-2">
+                    {% if not medicamentos %}
+                    <div class="alert alert-danger">
+                        <small>
+                            <i class="fas fa-exclamation-triangle me-1"></i> 
+                            <strong>Error:</strong> No se pudieron cargar los medicamentos. 
+                            <a href="/crud/medicamentos/" target="_blank" class="alert-link">
+                                Ver medicamentos disponibles
+                            </a>
+                        </small>
+                    </div>
+                    {% else %}
+                    <small class="text-muted">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Seleccione un medicamento de la lista. 
+                        <a href="/crud/medicamentos/" target="_blank" class="text-primary">
+                            Gestionar medicamentos
+                        </a>
+                    </small>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label class="form-label">Dosis *</label>
+                <input type="text" class="form-control-custom" name="dosis" 
+                       value="{{ tratamiento.dosis|default:'' }}" required
+                       placeholder="Ej: 500mg">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label class="form-label">Frecuencia *</label>
+                <input type="text" class="form-control-custom" name="frecuencia" 
+                       value="{{ tratamiento.frecuencia|default:'' }}" required
+                       placeholder="Ej: Cada 8 horas">
+            </div>
+        </div>
+    </div>
+</div>

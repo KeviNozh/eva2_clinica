@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block title %}Editar Paciente - Salud Vital{% endblock %}
+{% block page_title %}👥 Editar Paciente{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card-custom">
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">RUT *</label>
+                                <input type="text" class="form-control-custom" name="rut" value="{{ paciente.rut }}" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Nombre *</label>
+                                <input type="text" class="form-control-custom" name="nombre" value="{{ paciente.nombre }}" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Apellido *</label>
+                                <input type="text" class="form-control-custom" name="apellido" value="{{ paciente.apellido }}" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Fecha Nacimiento *</label>
+                                <input type="date" class="form-control-custom" name="fecha_nacimiento" value="{{ paciente.fecha_nacimiento|date:'Y-m-d' }}" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Género *</label>
+                                <select class="form-select-custom" name="genero" required>
+                                    <option value="Masculino" {% if paciente.genero == 'Masculino' %}selected{% endif %}>Masculino</option>
+                                    <option value="Femenino" {% if paciente.genero == 'Femenino' %}selected{% endif %}>Femenino</option>
+                                    <option value="Otro" {% if paciente.genero == 'Otro' %}selected{% endif %}>Otro</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Tipo de Sangre *</label>
+                                <select class="form-select-custom" name="tipo_sangre" required>
+                                    <option value="A+" {% if paciente.tipo_sangre == 'A+' %}selected{% endif %}>A+</option>
+                                    <option value="A-" {% if paciente.tipo_sangre == 'A-' %}selected{% endif %}>A-</option>
+                                    <option value="B+" {% if paciente.tipo_sangre == 'B+' %}selected{% endif %}>B+</option>
+                                    <option value="B-" {% if paciente.tipo_sangre == 'B-' %}selected{% endif %}>B-</option>
+                                    <option value="AB+" {% if paciente.tipo_sangre == 'AB+' %}selected{% endif %}>AB+</option>
+                                    <option value="AB-" {% if paciente.tipo_sangre == 'AB-' %}selected{% endif %}>AB-</option>
+                                    <option value="O+" {% if paciente.tipo_sangre == 'O+' %}selected{% endif %}>O+</option>
+                                    <option value="O-" {% if paciente.tipo_sangre == 'O-' %}selected{% endif %}>O-</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Teléfono</label>
+                                <input type="text" class="form-control-custom" name="telefono" value="{{ paciente.telefono }}">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Correo</label>
+                                <input type="email" class="form-control-custom" name="correo" value="{{ paciente.correo }}">
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Dirección</label>
+                            <textarea class="form-control-custom" name="direccion" rows="3">{{ paciente.direccion }}</textarea>
+                        </div>
+                        
+                        <div class="d-flex justify-content-end gap-2 mt-4">
+                            <a href="{% url 'crud:crud_pacientes' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-1"></i> Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-primary-custom">
+                                <i class="fas fa-save me-1"></i> Actualizar Paciente
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

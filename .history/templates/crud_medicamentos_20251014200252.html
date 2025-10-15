@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block title %}Gestión de Medicamentos - Salud Vital{% endblock %}
+{% block page_title %}💊 Gestión de Medicamentos{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <p class="text-muted mb-0">Administrar inventario de fármacos</p>
+        </div>
+        <div>
+            <a href="{% url 'crud:crear_medicamento' %}" class="btn btn-primary-custom">
+                <i class="fas fa-plus me-1"></i> Nuevo Medicamento
+            </a>
+            <a href="/api/medicamentos/" class="btn btn-outline-secondary" target="_blank">
+                <i class="fas fa-code me-1"></i> Ver API
+            </a>
+        </div>
+    </div>
+
+    <!-- Tabla de Medicamentos -->
+    <div class="card-custom">
+        <div class="card-body">
+            <h5 class="card-title mb-3"><i class="fas fa-list me-2"></i>Lista de Medicamentos</h5>
+            
+            {% if medicamentos %}
+            <div class="table-responsive">
+                <table class="table table-custom table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Laboratorio</th>
+                            <th>Stock</th>
+                            <th>Precio Unitario</th>
+                            <th>Tipo</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for medicamento in medicamentos %}
+                        <tr>
+                            <td>{{ medicamento.id }}</td>
+                            <td>{{ medicamento.nombre }}</td>
+                            <td>{{ medicamento.laboratorio|default:"-" }}</td>
+                            <td>{{ medicamento.stock }}</td>
+                            <td>${{ medicamento.precio_unitario }}</td>
+                            <td>{{ medicamento.tipo }}</td>
+                            <td>
+                                <div class="btn-group btn-group-sm">
+                                    <a href="{% url 'crud:editar_medicamento' medicamento.id %}" class="btn btn-outline-primary" title="Editar">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="{% url 'crud:eliminar_medicamento' medicamento.id %}" class="btn btn-outline-danger" title="Eliminar">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-pills fa-3x text-muted mb-3"></i>
+                <h4 class="text-muted">No se encontraron medicamentos</h4>
+                <p class="text-muted">No hay medicamentos registrados en el sistema.</p>
+                <a href="{% url 'crud:crear_medicamento' %}" class="btn btn-primary-custom">
+                    <i class="fas fa-plus me-1"></i> Crear Primer Medicamento
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

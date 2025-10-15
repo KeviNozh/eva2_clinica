@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block title %}Editar Médico - Salud Vital{% endblock %}
+{% block page_title %}👨‍⚕️ Editar Médico{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card-custom">
+                <div class="card-body">
+                    <!-- Verificar si hay especialidades -->
+                    {% if not especialidades %}
+                    <div class="alert alert-warning">
+                        <strong>Advertencia:</strong> No hay especialidades disponibles. 
+                        <a href="{% url 'crud:crear_especialidad' %}" class="alert-link">
+                            Crear una especialidad primero
+                        </a>
+                    </div>
+                    {% endif %}
+
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">RUT *</label>
+                                <input type="text" class="form-control-custom" name="rut" required 
+                                       value="{{ medico.user.username }}" readonly
+                                       placeholder="12.345.678-9">
+                                <small class="text-muted">El RUT no se puede modificar</small>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Nombre *</label>
+                                <input type="text" class="form-control-custom" name="nombre" required 
+                                       value="{{ medico.user.first_name }}"
+                                       placeholder="Carlos">
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Apellido *</label>
+                                <input type="text" class="form-control-custom" name="apellido" required 
+                                       value="{{ medico.user.last_name }}"
+                                       placeholder="López">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Especialidad *</label>
+                                <select class="form-select-custom" name="especialidad" required>
+                                    <option value="">Seleccionar especialidad</option>
+                                    {% if especialidades %}
+                                        {% for especialidad in especialidades %}
+                                        <option value="{{ especialidad.id }}" 
+                                                {% if medico.especialidad.id == especialidad.id %}selected{% endif %}>
+                                            {{ especialidad.nombre }}
+                                        </option>
+                                        {% endfor %}
+                                    {% else %}
+                                        <option value="" disabled>No hay especialidades disponibles</option>
+                                    {% endif %}
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Teléfono</label>
+                                <input type="tel" class="form-control-custom" name="telefono" 
+                                       value="{{ medico.telefono|default:'' }}"
+                                       placeholder="+56 9 1234 5678">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Correo Electrónico</label>
+                                <input type="email" class="form-control-custom" name="correo" 
+                                       value="{{ medico.user.email|default:'' }}"
+                                       placeholder="doctor@clinica.cl">
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-end gap-2 mt-4">
+                            <a href="{% url 'crud:crud_medicos' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-1"></i> Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-primary-custom" {% if not especialidades %}disabled{% endif %}>
+                                <i class="fas fa-save me-1"></i> Actualizar Médico
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
