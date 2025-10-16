@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Sistema Salud Vital{% endblock %}</title>
+
+    <!-- Prevent theme flash: apply saved preference before CSS loads -->
+    <script>
+    (function(){
+        try {
+            const KEY = 'salud_vital_theme';
+            const saved = localStorage.getItem(KEY);
+            if (saved === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else if (saved === 'light') {
+                document.documentElement.removeAttribute('data-theme');
+            } else {
+                const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                if (prefersDark) document.documentElement.setAttribute('data-theme', 'dark');
+                else document.documentElement.removeAttribute('data-theme');
+            }
+        } catch (e) {
+            // Silently ignore (no localStorage access)
+        }
+    })();
+    </script>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: linear-gradient(180deg,#fff,#fbfdff);
+            --muted: #6b7280;
+            --text: #1a1a1a; /* Texto principal más oscuro para tema claro */
+            --card: #fff;
+            --glass: rgba(121, 121, 121, 0.04);
+            --accent-1: linear-gradient(135deg,#7c3aed,#06b6d4);
+            --accent-2: linear-gradient(135deg,#ff7a59,#ffb86b);
+            --accent-3: linear-gradient(135deg,#34d399,#60a5fa);
+            --accent-4: linear-gradient(135deg,#f472b6,#7c3aed);
+            --radius: 12px;
+            --shadow: 0 10px 30px rgba(11,21,40,0.06);
+            --max-width: 1200px;
+            font-family: 'Poppins', system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+            color-scheme: light;
+            background-color: var(--bg);
+            color: var(--text);
+        }
+
+        html[data-theme="dark"] {
+            --bg: #0c1427;
+            --soft-bg: #151e33;
+            --card: #0b1220; /* <-- tarjeta/sidebars en oscuro */
+            --glass: rgba(255, 255, 255, 0.04);
+            --muted: #8d96a7;
+            --text: #ffffff; /* Texto principal más blanco para tema oscuro */
+            color-scheme: dark; /* ayuda al navegador con inputs/scrollbars */
+        }
+
+        /* Asegurar que el color principal se aplique sobre estilos de Bootstrap u otros */
+        body,
+        html,
+        .sidebar,
+        .main-content,
+        .brand, .brand * ,
+        .nav-link,
+        .nav-link i,
+        .title,
+        .tag,
+        .brand .title,
+        .brand .tag,
+        .card-custom,
+        .table-custom,
+        .table-custom th,
+        .table-custom td,
+        footer,
+        .messages,
+        .alert,
+        .form-control-custom,
+        .form-select-custom {
+            color: var(--text) !important;
+        }
+
+        /* --- Reemplazo: evitar forzar color en todo el DOM (rompía colores de botones/icnos) --- */
+
+        /* Color base por defecto */
+        html, body {
+            color: var(--text); /* toma la variable según tema */
+        }
+
+        /* Aplicar color a regiones principales de forma explícita (sin afectar botones/iconos) */
+        .sidebar,
+        .main-content,
+        footer,
+        .brand,
+        .nav-link,
+        .title,
+        .tag,
+        .messages,
+        .alert,
+        .form-control-custom,
+        .form-select-custom,
+        .card-custom,
+        .table-custom {
+            color: var(--text);
+        }
+
+        /* Nav icons: heredan del enlace (sin !important para permitir utilidades específicas) */
+        .sidebar .nav-link .fa,
+        .sidebar .nav-link svg {
+            color: inherit;
+            fill: currentColor;
+            stroke: currentColor;
+        }
+
+        /* El toggle del tema sigue usando currentColor (forzado) */
+        .theme-toggle svg,
+        .theme-toggle svg path,
+        .theme-toggle svg circle,
+        .theme-toggle svg rect {
+            fill: currentColor !important;
+            stroke: currentColor !important;
+        }
+
+        /* Permitir que utilidades de Bootstrap y botones mantengan sus colores */
+        .btn, .btn * ,
+        .text-primary, .text-danger, .text-success, .text-warning, .text-info {
+            color: unset !important;
+            fill: unset !important;
+            stroke: unset !important;
+        }
+
+        /* Si la columna de acciones tiene una clase wrapper, asegurar que iconos ahí puedan usar sus colores */
+        .actions .fa, .actions svg {
+            color: unset !important;
+            fill: unset !important;
+            stroke: unset !important;
+        }
+
+        /* Placeholders e inputs (mantener accesible) */
+        ::placeholder { color: var(--muted) !important; opacity: 1; }
+        input, textarea, select {
+            color: var(--text) !important;
+            background: var(--card) !important;
+            border-color: var(--glass) !important;
+        }
+
+        /* Forzar que los SVG dentro del toggle usen currentColor (se vuelvan claros/oscuro según --text) */
+        .theme-toggle {
+            display: inline-grid;
+            place-items: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            border: 1px solid var(--glass);
+            background: var(--card);
+            cursor: pointer;
+            box-shadow: 0 6px 18px rgba(11,21,40,0.04);
+            color: var(--text); /* Icono seguirá el color del texto */
+        }
+
+        .theme-toggle svg,
+        .theme-toggle svg path,
+        .theme-toggle svg circle,
+        .theme-toggle svg rect {
+            fill: currentColor !important;
+            stroke: currentColor !important;
+        }
+
+        html[data-theme="dark"] .theme-toggle {
+            background: rgba(255, 255, 255, 0.05); /* Ligeramente más claro */
+            border: 1px solid rgba(255, 255, 255, 0.1); /* Borde más visible */
+            color: var(--text); /* asegurar color blanco en modo dark */
+        }
+
+        * { box-sizing: border-box }
+        html, body { height: 100%; margin: 0; background: var(--card);; -webkit-font-smoothing: antialiased; color: var(--text); }
+        a { color: inherit; text-decoration: none }
+        button { font: inherit }
+
+        .sidebar {
+            min-height: 100vh;
+            background: var(--card);
+            border-right: 1px solid var(--glass);
+        }
+
+        .nav-link {
+            padding: 8px 12px;
+            border-radius: 10px;
+            color: var(--text);
+            opacity: 0.9;
+            font-weight: 700;
+        }
+
+        .sidebar .nav-link:hover {
+            background: var(--glass);
+            transform: translateX(4px);
+        }
+
+        .main-content {
+            background: var(--bg);
+            padding: 20px;
+        }
+
+        .card-custom {
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--glass);
+            margin-bottom: 20px;
+        }
+
+        .btn-primary-custom {
+            background: var(--accent-1);
+            border: none;
+            color: white;
+            font-weight: 600;
+        }
+
+        .brand .subtitle {
+            font-size: 13px;
+            color: var(--muted); /* corregido: faltaba ; */
+            margin-top: 4px;
+        }
+
+        .theme-toggle {
+            display: inline-grid;
+            place-items: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            border: 1px solid var(--glass);
+            background: var(--card);
+            cursor: pointer;
+            box-shadow: 0 6px 18px rgba(11,21,40,0.04);
+            color: var(--text); /* Icono seguirá el color del texto */
+        }
+
+            html[data-theme="dark"] .theme-toggle {
+                background: rgba(255, 255, 255, 0.05); /* Ligeramente más claro */
+                border: 1px solid rgba(255, 255, 255, 0.1); /* Borde más visible */
+                color: var(--text); /* asegurar color blanco en modo dark */
+            }
+
+        .table-custom {
+            background: var(--card);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .table-custom th {
+            background: var(--glass);
+            color: var(--muted);
+            font-weight: 600;
+            border: none;
+            padding: 12px 16px;
+        }
+
+        .table-custom td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--glass);
+        }
+
+        .form-control-custom, .form-select-custom {
+            background: var(--card);
+            border: 1px solid var(--glass);
+            color: var(--text);
+            border-radius: var(--radius);
+        }
+
+        .form-control-custom:focus, .form-select-custom:focus {
+            background: var(--card);
+            border-color: #7c3aed;
+            color: var(--text);
+            box-shadow: 0 0 0 0.2rem rgba(124, 58, 237, 0.25);
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav class="col-md-3 col-lg-2 d-md-block sidebar">
+                <div class="position-sticky pt-3">
+                    <div class="brand p-3 mb-4">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="logo" style="width: 48px; height: 48px; border-radius: 12px; background: var(--accent-1); display: grid; place-items: center; color: white; font-weight: 700;">
+                                SV
+                            </div>
+                            <div>
+                                <div class="title" style="font-weight: 700;">Salud Vital</div>
+                                <div class="tag" style="font-size: 13px; color: var(--muted);">Sistema Integral</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'inicio' %}">
+                                <i class="fas fa-home me-2"></i> Inicio
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'crud:crud_pacientes' %}">
+                                <i class="fas fa-user-injured me-2"></i> Pacientes
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'crud:crud_medicos' %}">
+                                <i class="fas fa-user-md me-2"></i> Médicos
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'crud:crud_especialidades' %}">
+                                <i class="fas fa-stethoscope me-2"></i> Especialidades
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'crud:crud_consultas' %}">
+                                <i class="fas fa-clipboard-list me-2"></i> Consultas
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'crud:crud_medicamentos' %}">
+                                <i class="fas fa-pills me-2"></i> Medicamentos
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'crud:crud_tratamientos' %}">
+                                <i class="fas fa-heartbeat me-2"></i> Tratamientos
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'crud:crud_recetas' %}">
+                                <i class="fas fa-file-prescription me-2"></i> Recetas
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'crud:crud_salas' %}">
+                                <i class="fas fa-door-open me-2"></i> Salas
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/api/docs/" target="_blank">
+                                <i class="fas fa-code me-2"></i> API Docs
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Main content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
+                    <h1 class="h2">{% block page_title %}Sistema Salud Vital{% endblock %}</h1>
+                    <div class="d-flex align-items-center gap-2">
+                        <button class="theme-toggle" aria-pressed="false" title="Cambiar tema" data-theme-toggle>
+                            <span class="sr-only">Alternar tema claro/oscuro</span>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
+                                <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" fill="#0b1530" opacity="0.95"/>
+                                <path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="#6b7280" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Mensajes -->
+                {% if messages %}
+                <div class="messages">
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <!-- Contenido principal -->
+                {% block content %}
+                {% endblock %}
+            </main>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-5 py-3" style="background: var(--card); border-top: 1px solid var(--glass);">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <div style="font-weight:700">Clínica Salud Vital — Panel |Kevin Torres| </div>
+                <div style="color: var(--muted);">|Sección: TI3041/IEI-172-N4/D| • |Fecha: 13/10/2025|</div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+    (function(){
+        const KEY = 'salud_vital_theme';
+        const root = document.documentElement;
+        const btn = document.querySelector('[data-theme-toggle]');
+        const yearEl = document.getElementById('current-year');
+        if (yearEl) yearEl.textContent = new Date().getFullYear(); // protegido
+
+        // SVG icons use currentColor so adopt the button/text color
+        const ICON_SUN = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        const ICON_MOON = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden><path d="M21 12.79A9 9 0 1111.21 3a7 7 0 109.79 9.79z"/></svg>';
+
+        function applyTheme(theme){
+            if(!btn) return; // si no hay botón, salimos
+            // Ajustar atributo data-theme
+            if(theme === 'dark'){
+                root.setAttribute('data-theme','dark');
+                btn.setAttribute('aria-pressed','true');
+                btn.title = 'Cambiar a tema claro';
+                btn.innerHTML = '<span class="sr-only">Tema oscuro activado. Cambiar a claro</span>' + ICON_SUN;
+            } else {
+                root.removeAttribute('data-theme');
+                btn.setAttribute('aria-pressed','false');
+                btn.title = 'Cambiar a tema oscuro';
+                btn.innerHTML = '<span class="sr-only">Tema claro activado. Cambiar a oscuro</span>' + ICON_MOON;
+            }
+
+            // Forzar color del botón para que el SVG (currentColor) tenga el color correcto inmediatamente
+            try {
+                const computed = getComputedStyle(root).getPropertyValue('--text') || '';
+                const color = computed.trim() || (theme === 'dark' ? '#ffffff' : '#1a1a1a');
+                btn.style.color = color;
+            } catch(e) {
+                // fallback
+                btn.style.color = theme === 'dark' ? '#ffffff' : '#1a1a1a';
+            }
+        }
+
+        // initial: saved preference > prefers-color-scheme > default light
+        try {
+            const saved = localStorage.getItem(KEY);
+            if(saved === 'dark' || saved === 'light'){
+                applyTheme(saved);
+            } else {
+                const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                applyTheme(prefersDark ? 'dark' : 'light');
+            }
+        } catch(e) {
+            // ignore storage errors and default to system
+            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            applyTheme(prefersDark ? 'dark' : 'light');
+        }
+
+        if (btn) {
+            btn.addEventListener('click', function(){
+                const isDark = root.getAttribute('data-theme') === 'dark';
+                const next = isDark ? 'light' : 'dark';
+                applyTheme(next);
+                try { localStorage.setItem(KEY, next); } catch(e) {}
+            });
+
+            // Keep keyboard accessible (Enter / Space)
+            btn.addEventListener('keydown', function(e){
+                if(e.key === 'Enter' || e.key === ' '){
+                    e.preventDefault();
+                    btn.click();
+                }
+            });
+        }
+    })();
+    </script>
+
+    {% block scripts %}
+    {% endblock %}
+</body>
+</html>

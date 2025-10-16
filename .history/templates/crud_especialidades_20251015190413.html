@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Especialidades</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+        .btn-success {
+            background-color: #28a745;
+            color: white;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Gestión de Especialidades</h1>
+        
+        <!-- Formulario para agregar/editar especialidades -->
+        <div id="form-container">
+            <h2 id="form-title">Agregar Nueva Especialidad</h2>
+            <form id="especialidad-form">
+                <input type="hidden" id="especialidad-id">
+                <div class="form-group">
+                    <label for="nombre">Nombre:</label>
+                    <input type="text" id="nombre" required>
+                </div>
+                <div class="form-group">
+                    <label for="descripcion">Descripción:</label>
+                    <textarea id="descripcion" rows="4"></textarea>
+                </div>
+                <button type="submit" class="btn btn-success" id="submit-btn">Guardar</button>
+                <button type="button" class="btn btn-danger" id="cancel-btn" style="display: none;">Cancelar</button>
+            </form>
+        </div>
+        
+        <!-- Tabla de especialidades -->
+        <h2>Especialidades Registradas</h2>
+        <table id="especialidades-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Los datos se cargarán dinámicamente -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Datos de ejemplo (simulando la respuesta de la API)
+        const especialidades = [
+            { id: 5, nombre: "Peruana", descripcion: "-" },
+            { id: 3, nombre: "CARDIOLOGIA", descripcion: "-" },
+            { id: 4, nombre: "URGENCIAS", descripcion: "-" }
+        ];
+
+        // Elementos del DOM
+        const form = document.getElementById('especialidad-form');
+        const formTitle = document.getElementById('form-title');
+        const submitBtn = document.getElementById('submit-btn');
+        const cancelBtn = document.getElementById('cancel-btn');
+        const tableBody = document.querySelector('#especialidades-table tbody');
+
+        // Cargar datos en la tabla
+        function cargarTabla() {
+            tableBody.innerHTML = '';
+            especialidades.forEach(especialidad => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${especialidad.id}</td>
+                    <td>${especialidad.nombre}</td>
+                    <td>${especialidad.descripcion}</td>
+                    <td>
+                        <button class="btn btn-primary" onclick="editarEspecialidad(${especialidad.id})">Editar</button>
+                        <button class="btn btn-danger" onclick="eliminarEspecialidad(${especialidad.id})">Eliminar</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Editar especialidad
+        function editarEspecialidad(id) {
+            const especialidad = especialidades.find(e => e.id === id);
+            if (especialidad) {
+                document.getElementById('especialidad-id').value = especialidad.id;
+                document.getElementById('nombre').value = especialidad.nombre;
+                document.getElementById('descripcion').value = especialidad.descripcion;
+                
+                formTitle.textContent = 'Editar Especialidad';
+                submitBtn.textContent = 'Actualizar';
+                cancelBtn.style.display = 'inline-block';
+            }
+        }
+
+        // Eliminar especialidad
+        function eliminarEspecialidad(id) {
+            if (confirm('¿Está seguro de que desea eliminar esta especialidad?')) {
+                // Aquí iría la lógica para eliminar la especialidad
+                alert(`Especialidad con ID ${id} eliminada`);
+                // Recargar la tabla
+                cargarTabla();
+            }
+        }
+
+        // Manejar envío del formulario
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const id = document.getElementById('especialidad-id').value;
+            const nombre = document.getElementById('nombre').value;
+            const descripcion = document.getElementById('descripcion').value;
+            
+            if (id) {
+                // Actualizar especialidad existente
+                const index = especialidades.findIndex(e => e.id === parseInt(id));
+                if (index !== -1) {
+                    especialidades[index].nombre = nombre;
+                    especialidades[index].descripcion = descripcion;
+                }
+            } else {
+                // Agregar nueva especialidad
+                const nuevoId = Math.max(...especialidades.map(e => e.id)) + 1;
+                especialidades.push({
+                    id: nuevoId,
+                    nombre: nombre,
+                    descripcion: descripcion
+                });
+            }
+            
+            // Limpiar formulario
+            form.reset();
+            document.getElementById('especialidad-id').value = '';
+            formTitle.textContent = 'Agregar Nueva Especialidad';
+            submitBtn.textContent = 'Guardar';
+            cancelBtn.style.display = 'none';
+            
+            // Recargar tabla
+            cargarTabla();
+            
+            alert(id ? 'Especialidad actualizada correctamente' : 'Especialidad agregada correctamente');
+        });
+
+        // Manejar cancelación
+        cancelBtn.addEventListener('click', function() {
+            form.reset();
+            document.getElementById('especialidad-id').value = '';
+            formTitle.textContent = 'Agregar Nueva Especialidad';
+            submitBtn.textContent = 'Guardar';
+            cancelBtn.style.display = 'none';
+        });
+
+        // Cargar tabla al iniciar
+        cargarTabla();
+    </script>
+</body>
+</html>

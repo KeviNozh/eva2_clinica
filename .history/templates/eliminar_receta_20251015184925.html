@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}Eliminar Receta - Salud Vital{% endblock %}
+{% block page_title %}📝 Eliminar Receta{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card-custom">
+                <div class="card-body text-center">
+                    <div class="mb-4">
+                        <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                        <h4 class="text-warning">Confirmar Eliminación</h4>
+                    </div>
+                    
+                    <p class="alert alert-warning">
+                        <strong>¿Estás seguro de que deseas eliminar esta receta?</strong>
+                        <br>Esta acción no se puede deshacer.
+                    </p>
+                    
+                    <div class="card-custom mb-4">
+                        <div class="card-body text-start">
+                            <h5>Receta #{{ receta.id }}</h5>
+                            <p class="mb-1"><strong>Paciente:</strong> {{ receta.consulta.paciente.nombre }} {{ receta.consulta.paciente.apellido }}</p>
+                            <p class="mb-1"><strong>Médico:</strong> Dr. {{ receta.consulta.medico.user.first_name }} {{ receta.consulta.medico.user.last_name }}</p>
+                            <p class="mb-1"><strong>Medicamento:</strong> {{ receta.medicamento.nombre }}</p>
+                            <p class="mb-1"><strong>Dosis:</strong> {{ receta.dosis }}</p>
+                            <p class="mb-0"><strong>Frecuencia:</strong> {{ receta.frecuencia }}</p>
+                        </div>
+                    </div>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="d-flex justify-content-center gap-2">
+                            <a href="{% url 'crud:crud_recetas' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-1"></i> Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash me-1"></i> Sí, Eliminar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

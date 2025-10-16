@@ -1,0 +1,442 @@
+{% extends 'base.html' %}
+
+{% block title %}Inicio - Salud Vital{% endblock %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+  /* Paleta viva y variables */
+  :root{
+    --bg:#ffffff;      /* fondo oscuro general */
+    --soft-bg:#f6fbff;          /* paneles claros */
+    --glass: rgba(224, 255, 246, 0.06);
+    --muted:#1e395a;
+    --white: #514040ff;  
+
+    --c1-start:#7c3aed; --c1-end:#06b6d4;   /* morado -> cian */
+    --c2-start:#ff7a59; --c2-end:#ffb86b;   /* naranja -> amarillo */
+    --c3-start:#34d399; --c3-end:#60a5fa;   /* verde -> azul */
+    --c4-start:#f472b6; --c4-end:#7c3aed;   /* rosa -> morado */
+
+    --radius:14px;
+    --shadow-lg: 0 18px 60px rgba(2,6,23,0.5);
+    --max-width:1200px;
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color-scheme: dark;
+  }
+
+  /* Reset y layout */
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;background:
+    radial-gradient(600px 300px at 10% 10%, rgba(124,58,237,0.12), transparent 10%),
+    radial-gradient(500px 240px at 90% 70%, rgba(6,182,212,0.08), transparent 8%),
+    var(--bg);
+    -webkit-font-smoothing:antialiased;color:var(--white);
+  }
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:var(--max-width);margin:30px auto;padding:20px}
+
+  /* Header */
+  header.site{
+    display:flex;align-items:center;gap:16px;padding:18px;border-radius:12px;
+    background: linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+    border: 1px solid rgba(255,255,255,0.04);
+    box-shadow: 0 8px 30px rgba(2,6,23,0.45);
+  }
+  .brand{display:flex;gap:12px;align-items:center}
+  .logo{
+    width:64px;height:64px;border-radius:12px;background:linear-gradient(135deg,var(--c1-start),var(--c1-end));
+    display:grid;place-items:center;font-weight:900;font-size:18px;color:var(--white);box-shadow:0 12px 40px rgba(124,58,237,0.14)
+  }
+  .brand .title{font-weight:800;font-size:18px}
+  .brand .subtitle{font-size:13px;color:#f6fbff;margin-top:4px}
+
+  nav.main{margin-left:auto;display:flex;gap:10px;align-items:center}
+  .nav-link{padding:8px 12px;border-radius:10px;color:var(--white);opacity:0.9;font-weight:700}
+  .nav-link.ghost{background:transparent;border:1px solid rgba(186, 179, 179, 0.04);opacity:0.8}
+  .nav-link.cta{background:linear-gradient(90deg,var(--c2-start),var(--c2-end));box-shadow:0 12px 30px rgba(255,122,89,0.14)}
+
+  /* Hero */
+  .hero{display:grid;grid-template-columns:1fr 380px;gap:22px;margin-top:22px;align-items:start}
+  @media (max-width:980px){ .hero{grid-template-columns:1fr} }
+  .hero-card{
+    background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+    border-radius:var(--radius);padding:28px;box-shadow:var(--shadow-lg);
+    position:relative;overflow:hidden;
+  }
+  /* decorative shapes */
+  .hero-card::before{
+    content:"";position:absolute;right:-120px;top:-60px;width:320px;height:320px;border-radius:160px;
+    background:linear-gradient(135deg,var(--c4-start),var(--c4-end));opacity:0.06;transform:rotate(20deg);
+  }
+  .hero h1{margin:0;font-size:34px;line-height:1.02}
+  .hero p{margin:12px 0;color:#9da0a3;font-size:15px}
+  .cta-group{display:flex;gap:12px;margin-top:18px;flex-wrap:wrap}  
+  .btn{
+    padding:12px 18px;border-radius:12px;border:0;font-weight:800;cursor:pointer;
+    color:var(--white);box-shadow:0 10px 30px rgba(2,6,23,0.4)
+  }
+  .btn.primary{background:linear-gradient(90deg,var(--c1-start),var(--c1-end))}
+  .btn.alt{background:linear-gradient(90deg,var(--c3-start),var(--c3-end))}
+
+  /* Appointment card (right) */
+  .appointment{
+    background: linear-gradient(180deg, rgba(90, 90, 90, 0.03), rgba(87, 86, 86, 0.02));
+    padding:18px;border-radius:16px;border:1px solid rgba(255,255,255,0.04);box-shadow:0 12px 40px rgba(2,6,23,0.45)
+  }
+  .appointment h3{margin:0 0 10px 0}
+  .appointment label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+  .appointment input, .appointment select{width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--white);margin-bottom:10px}
+
+  /* Services grid */
+  .services{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:26px}
+  @media (max-width:1100px){ .services{grid-template-columns:repeat(2,1fr)} }
+  @media (max-width:700px){ .services{grid-template-columns:1fr} }
+  .service{
+    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    padding:16px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);display:flex;gap:12px;align-items:flex-start;
+  }
+  .service .icon{width:56px;height:56px;border-radius:12px;display:grid;place-items:center;color:var(--white);font-weight:900}
+  .s1{background:linear-gradient(135deg,var(--c1-start),var(--c1-end))}
+  .s2{background:linear-gradient(135deg,var(--c2-start),var(--c2-end))}
+  .s3{background:linear-gradient(135deg,var(--c3-start),var(--c3-end))}
+  .service .title{font-weight:800}
+  .service .desc{color:var(--muted);margin-top:6px;font-size:14px}
+
+  /* Specialists */
+  .specialists{margin-top:28px}
+  .specialists h2{margin:0 0 12px 0}
+  .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  @media (max-width:1100px){ .cards{grid-template-columns:repeat(2,1fr)} }
+  @media (max-width:600px){ .cards{grid-template-columns:1fr} }
+  .doctor{
+    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);display:flex;gap:12px;align-items:center;
+  }
+  .avatar{width:64px;height:64px;border-radius:12px;display:grid;place-items:center;font-weight:900;color:var(--white)}
+  .avatar.a1{background:linear-gradient(135deg,var(--c1-start),var(--c1-end))}
+  .avatar.a2{background:linear-gradient(135deg,var(--c2-start),var(--c2-end))}
+  .avatar.a3{background:linear-gradient(135deg,var(--c3-start),var(--c3-end))}
+  .avatar.a4{background:linear-gradient(135deg,var(--c4-start),var(--c4-end))}
+  .doc-meta .name{font-weight:800}
+  .doc-meta .spec{color:var(--muted);font-size:13px}
+
+  /* Facilities / base */
+  .base{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-top:28px}
+  @media (max-width:900px){ .base{grid-template-columns:1fr} }
+  .about, .contact{
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);
+  }
+  .about h3{margin-top:0}
+  .features{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+  .feature{padding:10px;border-radius:10px;background:linear-gradient(90deg, rgba(255,255,255,0.02), transparent);font-weight:700;color:var(--white);font-size:13px}
+
+  /* Contact */
+  .contact form input, .contact form textarea{width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--white);margin-bottom:8px}
+
+  /* Footer */
+  footer.site{
+    margin-top:28px;padding:18px;border-radius:12px;background:linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+    border:1px solid rgba(255,255,255,0.04);
+    display:flex;justify-content:space-between;align-items:center;gap:12px;box-shadow:0 12px 40px rgba(2,6,23,0.45)
+  }
+  .footer-left{font-weight:800}
+  .footer-right{color:var(--muted)}
+  .pill{display:inline-block;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,0.04);font-weight:700}
+
+  /* API Links Section */
+  .api-section {
+    margin-top: 40px;
+    padding: 30px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.04);
+  }
+  .api-links {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+  }
+  .api-link {
+    padding: 15px;
+    background: rgba(255,255,255,0.02);
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.03);
+    transition: all 0.3s ease;
+  }
+  .api-link:hover {
+    background: rgba(255,255,255,0.05);
+    transform: translateY(-2px);
+  }
+
+  /* Small responsive tweaks */
+  @media (max-width:520px){
+    .nav-link{display:none}
+    header.site{padding:12px}
+    .logo{width:52px;height:52px}
+  }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <!-- Header -->
+    <header class="site" role="banner" aria-label="Encabezado principal">
+      <div class="brand">
+        <div class="logo" aria-hidden>SV</div>
+        <div>
+          <div class="title">Salud Vital</div>
+          <div class="subtitle">Clínica Integral — Atención humana</div>
+        </div>
+      </div>
+
+      <nav class="main" role="navigation" aria-label="Navegación principal">
+        <a class="nav-link" href="#home">Inicio</a>
+        <a class="nav-link" href="#servicios">Servicios</a>
+        <a class="nav-link" href="#medicos">Especialistas</a>
+        <a class="nav-link" href="#api">API</a>
+        <a class="nav-link cta" href="/admin/">Administración</a>
+      </nav>
+    </header>
+
+    <!-- Hero + Appointment -->
+    <section class="hero" id="home" aria-labelledby="hero-title">
+      <div class="hero-card">
+        <h1 id="hero-title">Cuidado médico con enfoque humano y tecnología</h1>
+        <p>Atendemos a tu familia con especialistas certificados, historia clínica electrónica segura y atención integral.</p>
+
+        <div class="cta-group">
+          <a class="btn primary" href="/api/docs/">Documentación API</a>
+          <a class="btn alt" href="/api/">Explorar API</a>
+        </div>
+
+        <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">
+          <span class="pill">PostgreSQL</span>
+          <span class="pill">Django REST</span>
+          <span class="pill">Swagger Docs</span>
+        </div>
+      </div>
+
+      <aside class="appointment" aria-labelledby="ap-title" id="cita">
+        <h3 id="ap-title">Acceso Rápido</h3>
+        <div style="text-align: center; margin: 20px 0;">
+          <a href="/admin/" class="btn primary" style="display: block; margin-bottom: 10px;">Panel Administración</a>
+          <a href="/api/docs/" class="btn alt" style="display: block;">Documentación API</a>
+        </div>
+        <div style="color: var(--muted); font-size: 14px; text-align: center;">
+          Usuario: admin | Contraseña: backend123
+        </div>
+      </aside>
+    </section>
+
+    <!-- Services -->
+    <section id="servicios" class="services" aria-label="Servicios destacados">
+      <article class="service">
+        <div class="icon s1">🏥</div>
+        <div>
+          <div class="title">Consultas y control</div>
+          <div class="desc">Atención primaria, controles preventivos y manejo de enfermedades crónicas.</div>
+        </div>
+      </article>
+
+      <article class="service">
+        <div class="icon s2">🔬</div>
+        <div>
+          <div class="title">Diagnóstico y laboratorio</div>
+          <div class="desc">Imágenes, laboratorio clínico y exámenes especializados con entrega rápida.</div>
+        </div>
+      </article>
+
+      <article class="service">
+        <div class="icon s3">💊</div>
+        <div>
+          <div class="title">Tratamientos y rehabilitación</div>
+          <div class="desc">Planes personalizados, fisioterapia y seguimiento multidisciplinario.</div>
+        </div>
+      </article>
+    </section>
+
+    <!-- Specialists -->
+    <section class="specialists" id="medicos">
+      <h2>Especialistas destacados</h2>
+      <div class="cards" role="list">
+        <div class="doctor" role="listitem">
+          <div class="avatar a1">👩‍⚕️</div>
+          <div class="doc-meta" style="flex:1">
+            <div class="name">Dra. Ana Pérez</div>
+            <div class="spec">Medicina General</div>
+          </div>
+          <div style="text-align:right">
+            <div class="muted">+56 9 1234 5678</div>
+          </div>
+        </div>
+
+        <div class="doctor">
+          <div class="avatar a2">👨‍⚕️</div>
+          <div class="doc-meta" style="flex:1">
+            <div class="name">Dr. Luis Gómez</div>
+            <div class="spec">Cardiología</div>
+          </div>
+          <div style="text-align:right">
+            <div class="muted">+56 9 8765 4321</div>
+          </div>
+        </div>
+
+        <div class="doctor">
+          <div class="avatar a3">👩‍⚕️</div>
+          <div class="doc-meta" style="flex:1">
+            <div class="name">Dra. Marta Ruiz</div>
+            <div class="spec">Pediatría</div>
+          </div>
+          <div style="text-align:right">
+            <div class="muted">+56 2 2345 6789</div>
+          </div>
+        </div>
+
+        <div class="doctor">
+          <div class="avatar a4">👨‍⚕️</div>
+          <div class="doc-meta" style="flex:1">
+            <div class="name">Dr. Juan Valdés</div>
+            <div class="spec">Traumatología</div>
+          </div>
+          <div style="text-align:right">
+            <div class="muted">+56 9 1122 3344</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+<!-- Agregar esta sección después de "Especialistas destacados" -->
+<section class="api-section" id="crud">
+  <h2>🔧 Gestión del Sistema (CRUD)</h2>
+  <p class="muted">Interfaces amigables para administrar todos los datos del sistema</p>
+  
+  <div class="api-links">
+    <a href="/crud/especialidades/" class="api-link">
+      <strong>🎓 Especialidades</strong>
+      <div class="muted">Gestionar especialidades médicas</div>
+    </a>
+    <a href="/crud/medicos/" class="api-link">
+      <strong>👨‍⚕️ Médicos</strong>
+      <div class="muted">Administrar profesionales</div>
+    </a>
+    <a href="/crud/pacientes/" class="api-link">
+      <strong>👥 Pacientes</strong>
+      <div class="muted">Gestionar pacientes</div>
+    </a>
+    <a href="/crud/consultas/" class="api-link">
+      <strong>📋 Consultas Médicas</strong>
+      <div class="muted">Historial de consultas</div>
+    </a>
+    <a href="/crud/medicamentos/" class="api-link">
+      <strong>💊 Medicamentos</strong>
+      <div class="muted">Inventario de fármacos</div>
+    </a>
+    <a href="/crud/tratamientos/" class="api-link">
+      <strong>🩺 Tratamientos</strong>
+      <div class="muted">Planes de tratamiento</div>
+    </a>
+    <a href="/crud/recetas/" class="api-link">
+      <strong>📝 Recetas Médicas</strong>
+      <div class="muted">Prescripciones médicas</div>
+    </a>
+    <a href="/crud/salas/" class="api-link">
+      <strong>🏢 Salas de Atención</strong>
+      <div class="muted">Gestionar salas</div>
+    </a>
+  </div>
+</section>
+
+    <!-- API Section -->
+    <section class="api-section" id="api">
+      <h2>API del Sistema</h2>
+      <p class="muted">Endpoints disponibles para gestión completa del sistema médico</p>
+      
+      <div class="api-links">
+        <a href="/api/especialidades/" class="api-link">
+          <strong>🎓 Especialidades</strong>
+          <div class="muted">Gestión de especialidades médicas</div>
+        </a>
+        <a href="/api/medicos/" class="api-link">
+          <strong>👨‍⚕️ Médicos</strong>
+          <div class="muted">Registro de profesionales</div>
+        </a>
+        <a href="/api/pacientes/" class="api-link">
+          <strong>👥 Pacientes</strong>
+          <div class="muted">Gestión de pacientes</div>
+        </a>
+        <a href="/api/consultas-medicas/" class="api-link">
+          <strong>📋 Consultas</strong>
+          <div class="muted">Historial de consultas</div>
+        </a>
+        <a href="/api/medicamentos/" class="api-link">
+          <strong>💊 Medicamentos</strong>
+          <div class="muted">Inventario de fármacos</div>
+        </a>
+        <a href="/api/tratamientos/" class="api-link">
+          <strong>🩺 Tratamientos</strong>
+          <div class="muted">Planes de tratamiento</div>
+        </a>
+        <a href="/api/recetas-medicas/" class="api-link">
+          <strong>📝 Recetas</strong>
+          <div class="muted">Prescripciones médicas</div>
+        </a>
+        <a href="/api/salas-atencion/" class="api-link">
+          <strong>🏢 Salas</strong>
+          <div class="muted">Gestión de salas</div>
+        </a>
+      </div>
+    </section>
+
+    <!-- Base / About & Contact -->
+    <section class="base" id="contacto">
+      <div class="about">
+        <h3>Sistema Salud Vital</h3>
+        <p class="muted">Backend completo desarrollado con Django REST Framework, PostgreSQL, y documentación automática. Incluye CRUD completo, filtros, búsquedas y autenticación.</p>
+
+        <div class="features" aria-hidden>
+          <div class="feature">Django REST Framework</div>
+          <div class="feature">PostgreSQL</div>
+          <div class="feature">Documentación Swagger</div>
+        </div>
+      </div>
+
+      <aside class="contact" aria-labelledby="contact-title">
+        <h3 id="contact-title">Desarrollador</h3>
+        <p class="muted">Evaluación Backend - Sistema completo de gestión médica</p>
+
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <div style="flex:1">
+            <div class="muted">Proyecto</div>
+            <div style="font-weight:800">Salud Vital</div>
+          </div>
+          <div style="flex:1">
+            <div class="muted">Tecnología</div>
+            <div style="font-weight:800">Django + DRF</div>
+          </div>
+        </div>
+
+        <div style="margin-top:12px; text-align: center;">
+          <a href="/api/docs/" class="btn primary">Ver Documentación API</a>
+        </div>
+      </aside>
+    </section>
+
+    <!-- Footer -->
+    <footer class="site" role="contentinfo">
+      <div class="footer-left">
+        Clínica Salud Vital — Panel |Kevin Torres|
+      </div>
+      <div class="footer-right">
+        <div class="muted">|Sección: TI3041/IEI-172-N4/D| • |Fecha: 13/10/2025|</div>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}Inicio - Salud Vital{% endblock %}
+
+{% block content %}
+<style>
+    /* Estilos específicos SOLO para la página de inicio */
+    :root, html[data-theme="dark"] {
+        --c1-start: #7c3aed; --c1-end: #06b6d4;
+        --c2-start: #ff7a59; --c2-end: #ffb86b;
+        --c3-start: #34d399; --c3-end: #60a5fa;
+        --c4-start: #f472b6; --c4-end: #7c3aed;
+    }
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 20px; }
+    .hero { display: grid; grid-template-columns: 1fr 380px; gap: 22px; margin-top: 22px; }
+    .hero-card { background: var(--card); border-radius: var(--radius); padding: 28px; box-shadow: var(--shadow); }
+    .hero h1 { font-size: 34px; line-height: 1.2; color: var(--text); }
+    .hero p { color: var(--muted); }
+    .btn.primary { background: linear-gradient(90deg,var(--c1-start),var(--c1-end)); color: white; }
+    .btn.alt { background: linear-gradient(90deg,var(--c3-start),var(--c3-end)); color: white; }
+    .api-section { margin-top: 40px; padding: 30px; background: var(--card); border-radius: 16px; border: 1px solid var(--glass); }
+    .api-links { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; }
+    .api-link { padding: 15px; background: var(--bg); border-radius: 10px; border: 1px solid var(--glass); transition: all 0.3s ease; }
+    .api-link:hover { background: var(--glass); transform: translateY(-2px); }
+    .api-link strong { color: var(--text); }
+    .api-link .muted { color: var(--muted); font-size: 0.9em; }
+
+    @media (max-width:980px){ .hero{grid-template-columns:1fr} }
+</style>
+
+<div class="wrap">
+    <section class="hero" id="home">
+        <div class="hero-card">
+            <h1>Cuidado médico con enfoque humano y tecnología</h1>
+            <p>Atendemos a tu familia con especialistas certificados, historia clínica electrónica segura y atención integral.</p>
+            <div class="d-flex gap-2 mt-4">
+                <a class="btn primary" href="/api/docs/">Documentación API</a>
+                <a class="btn alt" href="/api/">Explorar API</a>
+            </div>
+        </div>
+        <aside class="api-section p-3">
+            <h3>Acceso Rápido</h3>
+            <a href="/admin/" class="btn primary w-100 mb-2">Panel Administración</a>
+            <a href="{% url 'crud:crud_pacientes' %}" class="btn alt w-100">Gestión de Pacientes</a>
+        </aside>
+    </section>
+
+    <section class="api-section" id="crud">
+        <h2>🔧 Gestión del Sistema (CRUD)</h2>
+        <p class="muted">Interfaces amigables para administrar todos los datos del sistema.</p>
+        <div class="api-links">
+            <a href="{% url 'crud:crud_especialidades' %}" class="api-link"><strong>🎓 Especialidades</strong><div class="muted">Gestionar especialidades</div></a>
+            <a href="{% url 'crud:crud_medicos' %}" class="api-link"><strong>👨‍⚕️ Médicos</strong><div class="muted">Administrar profesionales</div></a>
+            <a href="{% url 'crud:crud_pacientes' %}" class="api-link"><strong>👥 Pacientes</strong><div class="muted">Gestionar pacientes</div></a>
+            <a href="{% url 'crud:crud_consultas' %}" class="api-link"><strong>📋 Consultas</strong><div class="muted">Historial de consultas</div></a>
+            <a href="{% url 'crud:crud_medicamentos' %}" class="api-link"><strong>💊 Medicamentos</strong><div class="muted">Inventario de fármacos</div></a>
+            <a href="{% url 'crud:crud_tratamientos' %}" class="api-link"><strong>🩺 Tratamientos</strong><div class="muted">Planes de tratamiento</div></a>
+            <a href="{% url 'crud:crud_recetas' %}" class="api-link"><strong>📝 Recetas</strong><div class="muted">Prescripciones médicas</div></a>
+            <a href="{% url 'crud:crud_salas' %}" class="api-link"><strong>🏢 Salas</strong><div class="muted">Gestionar salas</div></a>
+        </div>
+    </section>
+</div>
+{% endblock %}
